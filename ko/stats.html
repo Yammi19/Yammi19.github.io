@@ -16,7 +16,7 @@
     .nav-links a { color: #4b2e5a; text-decoration: none; font-weight: 500; transition: color 0.3s; }
     .nav-links a:hover, .nav-links a.active { color: #c084fc; }
     header { padding: 180px 0 120px; text-align: center; background: linear-gradient(to bottom, #fff5f0 0%, #ffffff 100%); }
-    h1 { font-size: 4.2rem; font-weight: 700; color: #c084fc; margin-bottom: 20px; letter-spacing: -1px; }
+    h1 { font-size: 4.2rem; font-weight: 700; color: #583475; margin-bottom: 20px; letter-spacing: -1px; }
     .subtitle { font-size: 1.9rem; color: #6b21a8; margin-bottom: 40px; max-width: 900px; margin-left: auto; margin-right: auto; }
     .chart-section { padding: 80px 0; }
     .card { background: #f8f6ff; border-radius: 30px; padding: 48px 40px; box-shadow: 0 18px 50px rgba(192,132,252,0.18); margin-top: 32px; }
@@ -39,6 +39,12 @@
     footer { padding: 60px 0 40px; text-align: center; color: #888; background: #f9f9fc; border-top: 1px solid #eee; }
     footer .accent { color: #c084fc; }
     @media (max-width: 768px) { h1 { font-size: 3.2rem; } .subtitle { font-size: 1.5rem; } .nav-links { gap: 24px; font-size: 0.95rem; } .chart-card { padding: 28px; } }
+   .bgimg {
+  background-image:linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)), /* 白色，50%透明度 */
+    url("https://live.staticflickr.com/3385/3413407724_b65cc330a0_b.jpg");
+  width: 100%;
+}
+  
   </style>
 </head>
 <body>
@@ -55,7 +61,7 @@
     </div>
   </nav>
 
-  <header>
+  <header class="bgimg">
     <div class="container">
       <h1>學習統計大公開</h1>
       <p class="subtitle">Tutorial 對學習的影響</p>
