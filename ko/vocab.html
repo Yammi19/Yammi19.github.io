@@ -211,11 +211,240 @@
       .progress-stats { gap: 40px; }
     }
 
-     .bgimg {
+      .bgimg {
   background-image:linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)), /* 白色，50%透明度 */
     url("https://live.staticflickr.com/3385/3413407724_b65cc330a0_b.jpg");
   width: 100%;
 }
+
+    /* Quiz Styles */
+    .quiz-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      z-index: 2000;
+      overflow-y: auto;
+      padding: 20px;
+    }
+    .quiz-overlay.active {
+      display: block;
+      animation: fadeIn 0.3s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    .quiz-container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 30px;
+    }
+    .quiz-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      color: white;
+    }
+    .quiz-close {
+      background: rgba(255,255,255,0.2);
+      border: none;
+      color: white;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      font-size: 1.5rem;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .quiz-close:hover {
+      background: rgba(255,255,255,0.3);
+      transform: scale(1.1);
+    }
+    .progress-bar-container {
+      background: rgba(255,255,255,0.2);
+      border-radius: 20px;
+      height: 12px;
+      margin-bottom: 30px;
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #ffd700, #ff8c00);
+      border-radius: 20px;
+      transition: width 0.5s ease;
+      width: 0%;
+    }
+    .timer-display {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255,255,255,0.15);
+      padding: 10px 20px;
+      border-radius: 25px;
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
+    .timer-display.warning {
+      background: rgba(248, 113, 113, 0.6);
+      animation: pulse 0.5s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+    .question-card {
+      background: white;
+      border-radius: 24px;
+      padding: 40px;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+      animation: slideUp 0.4s ease;
+    }
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .question-number {
+      color: #c084fc;
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 15px;
+    }
+    .question-text {
+      font-size: 2.2rem;
+      color: #4b2e5a;
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+    .question-hint {
+      color: #888;
+      font-size: 1.1rem;
+      margin-bottom: 30px;
+    }
+    .options-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+    }
+    .option-btn {
+      background: #f8f9fc;
+      border: 2px solid #e5e7eb;
+      border-radius: 16px;
+      padding: 20px;
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: #4b2e5a;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .option-btn:hover:not(:disabled) {
+      border-color: #c084fc;
+      background: #fdf5ff;
+      transform: translateY(-3px);
+    }
+    .option-btn.correct {
+      background: #4ade80;
+      border-color: #22c55e;
+      color: white;
+      animation: correctPop 0.5s ease;
+    }
+    @keyframes correctPop {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+    .option-btn.wrong {
+      background: #f87171;
+      border-color: #ef4444;
+      color: white;
+      animation: shake 0.4s ease;
+    }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20% { transform: translateX(-8px); }
+      40% { transform: translateX(8px); }
+      60% { transform: translateX(-8px); }
+      80% { transform: translateX(8px); }
+    }
+    .feedback-msg {
+      margin-top: 25px;
+      padding: 15px 25px;
+      border-radius: 12px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      display: none;
+    }
+    .feedback-msg.show {
+      display: block;
+      animation: fadeIn 0.3s ease;
+    }
+    .feedback-msg.correct {
+      background: #dcfce7;
+      color: #166534;
+    }
+    .feedback-msg.wrong {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+    .next-btn {
+      margin-top: 20px;
+      padding: 14px 40px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      background: linear-gradient(135deg, #c084fc, #a855f7);
+      color: white;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: none;
+    }
+    .next-btn.show {
+      display: inline-block;
+    }
+    .next-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(168,85,247,0.4);
+    }
+    .quiz-score {
+      text-align: center;
+      color: white;
+    }
+    .score-circle {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      background: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 30px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+    .score-number {
+      font-size: 3.5rem;
+      font-weight: 700;
+      color: #c084fc;
+    }
+    .score-label {
+      color: #888;
+      font-size: 0.9rem;
+    }
+    .result-title {
+      font-size: 2.5rem;
+      margin-bottom: 15px;
+    }
+    .result-stats {
+      font-size: 1.3rem;
+      opacity: 0.9;
+      margin-bottom: 30px;
+    }
   </style>
 </head>
 <body>
@@ -305,7 +534,7 @@
   <section>
     <div class="container" style="text-align:center;">
       <h2 class="section-title">準備好挑戰自己嗎？</h2>
-      <a href="#" class="cta-btn">開始今日單字挑戰 →</a>
+      <a href="#" class="cta-btn" onclick="startQuiz(); return false;">開始今日單字挑戰 →</a>
       <p style="margin-top:30px; color:#666; font-size:1.1rem;">
         完成每日挑戰，解鎖更多可愛貼圖與AI伴侶的甜甜稱讚 💕
       </p>
@@ -317,6 +546,246 @@
       <p>讓每個單字都變成甜蜜回憶 • <span class="accent">공부하자</span> ♥ • 香港 K-learners • 2026</p>
     </div>
   </footer>
+
+  <div class="quiz-overlay" id="quizOverlay">
+    <div class="quiz-container">
+      <div class="quiz-header">
+        <button class="quiz-close" onclick="closeQuiz()">×</button>
+        <div class="timer-display" id="timerDisplay">
+          ⏱️ <span id="timer">20</span>s
+        </div>
+      </div>
+      <div class="progress-bar-container">
+        <div class="progress-bar-fill" id="progressBar"></div>
+      </div>
+      
+      <div id="quizContent">
+        <div class="question-card" id="questionCard">
+          <div class="question-number" id="questionNumber">問題 1/10</div>
+          <div class="question-text" id="questionText">Loading...</div>
+          <div class="question-hint" id="questionHint"></div>
+          <div class="options-grid" id="optionsGrid"></div>
+          <div class="feedback-msg" id="feedbackMsg"></div>
+          <button class="next-btn" id="nextBtn" onclick="nextQuestion()">下一題 →</button>
+        </div>
+      </div>
+      
+      <div id="quizResults" style="display:none;">
+        <div class="quiz-score">
+          <div class="score-circle">
+            <span class="score-number" id="scoreNumber">0</span>
+            <span class="score-label">分</span>
+          </div>
+          <div class="result-title" id="resultTitle">太棒了！</div>
+          <div class="result-stats" id="resultStats">你答對了 0/10 題</div>
+          <button class="next-btn show" onclick="restartQuiz()">再玩一次 🔄</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const vocabQuestions = [
+      { question: "김치", answer: "泡菜", options: ["泡菜", "拌飯", "五花肉", "炒年糕"] },
+      { question: "떡볶이", answer: "炒年糕", options: ["泡菜", "炒年糕", "炸醬麵", "烤肉"] },
+      { question: "비빔밥", answer: "拌飯", options: ["湯飯", "拌飯", "冷麵", "石鍋拌飯"] },
+      { question: "삼겹살", answer: "五花肉", options: ["牛肉", "五花肉", "排骨", "雞肉"] },
+      { question: "여행", answer: "旅行", options: ["旅行", "機場", "酒店", "地圖"] },
+      { question: "공항", answer: "機場", options: ["港口", "機場", "車站", "海灘"] },
+      { question: "호텔", answer: "酒店", options: ["民宿", "酒店", "宿舍", "家"] },
+      { question: "행복해", answer: "幸福", options: ["悲傷", "幸福", "生氣", "害怕"] },
+      { question: "사랑해", answer: "我愛你", options: ["再見", "對不起", "我愛你", "謝謝"] },
+      { question: "피곤해", answer: "累了", options: ["開心", "累了", "餓了", "渴了"] },
+    ];
+
+    let currentQuestion = 0;
+    let score = 0;
+    let timeLeft = 20;
+    let timerInterval = null;
+    let answered = false;
+
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    
+    function playSound(type) {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      
+      if (type === 'correct') {
+        osc.frequency.setValueAtTime(523, audioCtx.currentTime);
+        osc.frequency.setValueAtTime(659, audioCtx.currentTime + 0.1);
+        osc.frequency.setValueAtTime(784, audioCtx.currentTime + 0.2);
+        gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.4);
+      } else if (type === 'wrong') {
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(200, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.3);
+        gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.3);
+      } else if (type === 'tick') {
+        osc.frequency.setValueAtTime(800, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.05);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.05);
+      } else if (type === 'win') {
+        const notes = [523, 587, 659, 698, 784, 880, 988, 1047];
+        notes.forEach((freq, i) => {
+          const o = audioCtx.createOscillator();
+          const g = audioCtx.createGain();
+          o.connect(g);
+          g.connect(audioCtx.destination);
+          o.frequency.setValueAtTime(freq, audioCtx.currentTime + i * 0.1);
+          g.gain.setValueAtTime(0.2, audioCtx.currentTime + i * 0.1);
+          g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + i * 0.1 + 0.3);
+          o.start(audioCtx.currentTime + i * 0.1);
+          o.stop(audioCtx.currentTime + i * 0.1 + 0.3);
+        });
+      }
+    }
+
+    function startQuiz() {
+      document.getElementById('quizOverlay').classList.add('active');
+      currentQuestion = 0;
+      score = 0;
+      loadQuestion();
+    }
+
+    function closeQuiz() {
+      document.getElementById('quizOverlay').classList.remove('active');
+      if (timerInterval) clearInterval(timerInterval);
+    }
+
+    function loadQuestion() {
+      answered = false;
+      const q = vocabQuestions[currentQuestion];
+      document.getElementById('questionNumber').textContent = `問題 ${currentQuestion + 1}/10`;
+      document.getElementById('questionText').textContent = q.question;
+      document.getElementById('questionHint').textContent = `這個韓文的意思是什麼？`;
+      document.getElementById('progressBar').style.width = `${(currentQuestion / 10) * 100}%`;
+      document.getElementById('feedbackMsg').className = 'feedback-msg';
+      document.getElementById('nextBtn').classList.remove('show');
+      
+      const optionsGrid = document.getElementById('optionsGrid');
+      optionsGrid.innerHTML = '';
+      
+      const shuffled = [...q.options].sort(() => Math.random() - 0.5);
+      shuffled.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.className = 'option-btn';
+        btn.textContent = opt;
+        btn.onclick = () => checkAnswer(opt, q.answer, btn);
+        optionsGrid.appendChild(btn);
+      });
+
+      startTimer();
+    }
+
+    function startTimer() {
+      timeLeft = 20;
+      const timerDisplay = document.getElementById('timerDisplay');
+      const timerEl = document.getElementById('timer');
+      timerEl.textContent = timeLeft;
+      timerDisplay.classList.remove('warning');
+      
+      if (timerInterval) clearInterval(timerInterval);
+      
+      timerInterval = setInterval(() => {
+        timeLeft--;
+        timerEl.textContent = timeLeft;
+        if (timeLeft <= 5) playSound('tick');
+        
+        if (timeLeft <= 10) {
+          timerDisplay.classList.add('warning');
+        }
+        
+        if (timeLeft <= 0) {
+          clearInterval(timerInterval);
+          handleTimeout();
+        }
+      }, 1000);
+    }
+
+    function checkAnswer(selected, correct, btn) {
+      if (answered) return;
+      answered = true;
+      clearInterval(timerInterval);
+
+      const buttons = document.querySelectorAll('.option-btn');
+      buttons.forEach(b => b.disabled = true);
+
+      if (selected === correct) {
+        btn.classList.add('correct');
+        score += 10;
+        playSound('correct');
+        document.getElementById('feedbackMsg').textContent = '🎉 正確！太厲害了！';
+        document.getElementById('feedbackMsg').className = 'feedback-msg show correct';
+      } else {
+        btn.classList.add('wrong');
+        playSound('wrong');
+        buttons.forEach(b => {
+          if (b.textContent === correct) b.classList.add('correct');
+        });
+        document.getElementById('feedbackMsg').textContent = `❌ 正確答案是：${correct}`;
+        document.getElementById('feedbackMsg').className = 'feedback-msg show wrong';
+      }
+
+      document.getElementById('nextBtn').classList.add('show');
+    }
+
+    function handleTimeout() {
+      answered = true;
+      const q = vocabQuestions[currentQuestion];
+      const buttons = document.querySelectorAll('.option-btn');
+      buttons.forEach(b => b.disabled = true);
+      buttons.forEach(b => {
+        if (b.textContent === q.answer) b.classList.add('correct');
+      });
+      document.getElementById('feedbackMsg').textContent = `⏰ 時間到！正確答案是：${q.answer}`;
+      document.getElementById('feedbackMsg').className = 'feedback-msg show wrong';
+      document.getElementById('nextBtn').classList.add('show');
+    }
+
+    function nextQuestion() {
+      currentQuestion++;
+      if (currentQuestion >= 10) {
+        showResults();
+      } else {
+        loadQuestion();
+      }
+    }
+
+function showResults() {
+      document.getElementById('quizContent').style.display = 'none';
+      document.getElementById('quizResults').style.display = 'block';
+      document.getElementById('progressBar').style.width = '100%';
+      document.getElementById('scoreNumber').textContent = score;
+      playSound('win');
+      
+      const resultTitle = document.getElementById('resultTitle');
+      if (score >= 80) {
+        resultTitle.textContent = '🎉 太厲害了！';
+      } else if (score >= 50) {
+        resultTitle.textContent = '👍 做得好！';
+      } else {
+        resultTitle.textContent = '💪 繼續努力！';
+      }
+      
+      document.getElementById('resultStats').textContent = `你答對了 ${score/10}/10 題`;
+    }
+
+    function restartQuiz() {
+      document.getElementById('quizContent').style.display = 'block';
+      document.getElementById('quizResults').style.display = 'none';
+      startQuiz();
+    }
+  </script>
 
 </body>
 </html>
