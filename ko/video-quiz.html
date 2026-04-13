@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>비디오 퀴즈 - Video Quiz</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Inter', 'Noto Sans KR', sans-serif;
+      background: #1a1a2e;
+      color: #eee;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 30px;
+    }
+
+    nav {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      background: rgba(26, 26, 46, 0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(192, 132, 252, 0.15);
+      z-index: 1000;
+      padding: 18px 0;
+    }
+    .nav-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .logo {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #c084fc;
+      text-decoration: none;
+    }
+    .nav-links {
+      display: flex;
+      gap: 40px;
+    }
+    .nav-links a {
+      color: #ddd;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s;
+    }
+    .nav-links a:hover, .nav-links a.active {
+      color: #c084fc;
+    }
+
+    .quiz-container {
+      padding: 120px 0 60px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .video-wrapper {
+      position: relative;
+      width: 100%;
+      padding-top: 56.25%;
+      background: #000;
+      border-radius: 16px;
+      overflow: hidden;
+      margin-bottom: 30px;
+    }
+    .video-wrapper iframe, .video-wrapper video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    .video-controls {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding: 20px;
+      background: #16213e;
+      border-radius: 12px;
+    }
+    .play-btn {
+      width: 50px;
+      height: 50px;
+      background: #c084fc;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+    }
+    .play-btn:hover {
+      background: #a855f7;
+      transform: scale(1.1);
+    }
+    .play-btn svg {
+      width: 20px;
+      height: 20px;
+      fill: white;
+    }
+
+    .progress-track {
+      flex: 1;
+      height: 8px;
+      background: #333;
+      border-radius: 4px;
+      cursor: pointer;
+      position: relative;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #c084fc, #a855f7);
+      border-radius: 4px;
+      width: 0%;
+      transition: width 0.1s;
+    }
+    .progress-marker {
+      position: absolute;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 16px;
+      height: 16px;
+      background: #c084fc;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    .progress-marker:hover {
+      transform: translate(-50%, -50%) scale(1.3);
+    }
+
+    .time-display {
+      font-size: 1rem;
+      color: #888;
+      min-width: 100px;
+      text-align: center;
+    }
+
+    .question-markers {
+      position: absolute;
+      bottom: 10px;
+      left: 0;
+      width: 100%;
+      height: 20px;
+      pointer-events: none;
+    }
+    .q-marker {
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      background: #f59e0b;
+      border-radius: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      cursor: pointer;
+      pointer-events: auto;
+      animation: pulse 1.5s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.5); }
+      50% { box-shadow: 0 0 0 8px rgba(245, 158, 11, 0); }
+    }
+
+    .popup-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.85);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 2000;
+    }
+    .popup-overlay.show {
+      display: flex;
+    }
+
+    .popup {
+      background: #1a1a2e;
+      border: 2px solid #c084fc;
+      border-radius: 24px;
+      padding: 40px;
+      max-width: 500px;
+      width: 90%;
+      text-align: center;
+      animation: popupIn 0.3s ease;
+    }
+    @keyframes popupIn {
+      from { transform: scale(0.8); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .popup h3 {
+      font-size: 1.1rem;
+      color: #c084fc;
+      margin-bottom: 10px;
+    }
+    .popup .question-text {
+      font-size: 1.8rem;
+      color: #fff;
+      margin-bottom: 30px;
+      font-weight: 600;
+    }
+    .popup .options {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .popup .option {
+      padding: 16px 24px;
+      background: #16213e;
+      border: 2px solid #333;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 1.1rem;
+      color: #ddd;
+    }
+    .popup .option:hover:not(.correct):not(.wrong) {
+      border-color: #c084fc;
+      background: #1f1f3d;
+    }
+    .popup .option.correct {
+      border-color: #22c55e;
+      background: #166534;
+      color: white;
+    }
+    .popup .option.wrong {
+      border-color: #ef4444;
+      background: #991b1b;
+      color: white;
+    }
+
+    .popup .feedback {
+      margin-top: 20px;
+      padding: 16px;
+      border-radius: 12px;
+      display: none;
+    }
+    .popup .feedback.show {
+      display: block;
+    }
+    .popup .feedback.correct {
+      background: #166534;
+      color: #86efac;
+    }
+    .popup .feedback.wrong {
+      background: #991b1b;
+      color: #fca5a5;
+    }
+
+    .popup .continue-btn {
+      margin-top: 24px;
+      padding: 14px 40px;
+      background: #c084fc;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: none;
+    }
+    .popup .continue-btn.show {
+      display: inline-block;
+    }
+    .popup .continue-btn:hover {
+      background: #a855f7;
+    }
+
+    .results {
+      display: none;
+      text-align: center;
+      padding: 80px 20px;
+    }
+    .results.show {
+      display: block;
+    }
+    .results h2 {
+      font-size: 2.5rem;
+      color: #c084fc;
+      margin-bottom: 30px;
+    }
+    .results .score {
+      font-size: 4rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 20px;
+    }
+    .results .message {
+      font-size: 1.3rem;
+      color: #888;
+      margin-bottom: 40px;
+    }
+    .results .restart-btn {
+      padding: 16px 48px;
+      background: #c084fc;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-size: 1.2rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    @media (max-width: 768px) {
+      .nav-links { gap: 20px; font-size: 0.9rem; }
+      .video-controls { flex-wrap: wrap; }
+      .popup { padding: 24px; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="container nav-container">
+      <a href="index.html" class="logo">공부하자 💕</a>
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="vocab.html">Vocabulary</a>
+        <a href="video-quiz.html" class="active">Video Quiz</a>
+        <a href="quiz.html">Quiz</a>
+        <a href="Resource.html">Resources</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="quiz-container">
+    <div class="video-wrapper" id="videoWrapper">
+      <div id="player"></div>
+    </div>
+
+    <div class="video-controls">
+      <button class="play-btn" id="playBtn">
+        <svg viewBox="0 0 24 24" id="playIcon"><path d="M8 5v14l11-7z"/></svg>
+      </button>
+      <div class="progress-track" id="progressTrack">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+      <div class="time-display" id="timeDisplay">0:00 / 0:00</div>
+    </div>
+  </div>
+
+  <div class="popup-overlay" id="popup">
+    <div class="popup">
+      <h3>문제 <span id="qNum">1</span></h3>
+      <div class="question-text" id="qText"></div>
+      <div class="options" id="options"></div>
+      <div class="feedback" id="feedback"></div>
+      <button class="continue-btn" id="continueBtn">계속하기</button>
+    </div>
+  </div>
+
+  <div class="quiz-container results" id="results">
+    <h2>퀴즈 완료! 🎉</h2>
+    <div class="score" id="scoreDisplay">0/0</div>
+    <div class="message" id="resultMessage"></div>
+    <a href="video-quiz.html" class="restart-btn">다시 하기</a>
+  </div>
+
+  <script src="https://www.youtube.com/iframe_api"></script>
+  <script>
+    const questions = [
+      { time: 30, text: "'안녕하세요' means?", options: ["Hello", "Goodbye", "Thank you", "Sorry"], answer: 0 },
+      { time: 60, text: "'감사합니다' means?", options: ["Hello", "Goodbye", "Thank you", "Sorry"], answer: 2 },
+      { time: 90, text: "'사랑해요' means?", options: ["I love you", "Goodbye", "Good night", "See you"], answer: 0 }
+    ];
+
+    let player;
+    let currentQ = 0;
+    let answeredQ = [];
+    let score = 0;
+    let isPaused = false;
+
+    const playBtn = document.getElementById('playBtn');
+    const playIcon = document.getElementById('playIcon');
+    const progressFill = document.getElementById('progressFill');
+    const timeDisplay = document.getElementById('timeDisplay');
+    const popup = document.getElementById('popup');
+    const qText = document.getElementById('qText');
+    const optionsEl = document.getElementById('options');
+    const feedback = document.getElementById('feedback');
+    const continueBtn = document.getElementById('continueBtn');
+    const qNum = document.getElementById('qNum');
+    const results = document.getElementById('results');
+    const quizContainer = document.querySelector('.quiz-container');
+
+    function onYouTubeIframeAPIReady() {
+      player = new YT.Player('player', {
+        videoId: '9bZkp7q19f0',
+        playerVars: { 'playsinline': 1, 'controls': 0 },
+        events: { 'onStateChange': onPlayerStateChange }
+      });
+    }
+
+    function onPlayerStateChange(event) {
+      if (event.data === YT.PlayerState.PLAYING) {
+        playIcon.innerHTML = '<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>';
+        updateProgress();
+      } else if (event.data === YT.PlayerState.PAUSED) {
+        playIcon.innerHTML = '<path d="M8 5v14l11-7z"/>';
+      }
+    }
+
+    function updateProgress() {
+      if (!player || !player.getDuration) return;
+      
+      const duration = player.getDuration();
+      const currentTime = player.getCurrentTime();
+      const percent = (currentTime / duration) * 100;
+      progressFill.style.width = percent + '%';
+      
+      timeDisplay.textContent = `${formatTime(currentTime)} / ${formatTime(duration)}`;
+      
+      questions.forEach((q, i) => {
+        if (Math.abs(currentTime - q.time) < 1 && !answeredQ.includes(i)) {
+          showQuestion(i);
+        }
+      });
+      
+      if (player.getPlayerState() === YT.PlayerState.PLAYING) {
+        requestAnimationFrame(updateProgress);
+      }
+    }
+
+    function formatTime(seconds) {
+      const m = Math.floor(seconds / 60);
+      const s = Math.floor(seconds % 60);
+      return `${m}:${s.toString().padStart(2, '0')}`;
+    }
+
+    function playVideo() {
+      if (player && player.playVideo) player.playVideo();
+    }
+
+    function pauseVideo() {
+      if (player && player.pauseVideo) player.pauseVideo();
+    }
+
+    playBtn.onclick = () => {
+      if (player && player.getPlayerState() === 1) {
+        pauseVideo();
+      } else {
+        playVideo();
+      }
+    };
+
+    function showQuestion(index) {
+      currentQ = index;
+      pauseVideo();
+      isPaused = true;
+      
+      qNum.textContent = index + 1;
+      qText.textContent = questions[index].text;
+      optionsEl.innerHTML = '';
+      
+      questions[index].options.forEach((opt, i) => {
+        const btn = document.createElement('button');
+        btn.className = 'option';
+        btn.textContent = opt;
+        btn.onclick = () => selectAnswer(i, btn);
+        optionsEl.appendChild(btn);
+      });
+      
+      feedback.classList.remove('show', 'correct', 'wrong');
+      continueBtn.classList.remove('show');
+      popup.classList.add('show');
+    }
+
+    function selectAnswer(selectedIndex, btn) {
+      const q = questions[currentQ];
+      const correctIndex = q.answer;
+      const options = document.querySelectorAll('.option');
+      
+      if (selectedIndex === correctIndex) {
+        score++;
+        feedback.textContent = "정답! 🎉";
+        feedback.className = 'feedback show correct';
+        btn.classList.add('correct');
+      } else {
+        feedback.textContent = "오답!";
+        feedback.className = 'feedback show wrong';
+        btn.classList.add('wrong');
+        options[correctIndex].classList.add('correct');
+      }
+      
+      options.forEach(opt => opt.style.pointerEvents = 'none');
+      answeredQ.push(currentQ);
+      continueBtn.classList.add('show');
+    }
+
+    continueBtn.onclick = () => {
+      popup.classList.remove('show');
+      isPaused = false;
+      
+      if (answeredQ.length >= questions.length) {
+        showResults();
+      } else {
+        playVideo();
+      }
+    };
+
+    function showResults() {
+      quizContainer.style.display = 'none';
+      results.classList.add('show');
+      document.getElementById('scoreDisplay').textContent = `${score}/${questions.length}`;
+      
+      const percent = score / questions.length * 100;
+      let message = '';
+      if (percent >= 90) message = '대단해요! 🎉 Amazing!';
+      else if (percent >= 70) message = '잘했어요! 😊 Good job!';
+      else if (percent >= 50) message = '좋아요! 💪 Keep going!';
+      else message = '열공하세요! 📚 Try again!';
+      
+      document.getElementById('resultMessage').textContent = message;
+    }
+
+    let checkInterval = setInterval(() => {
+      if (player && player.getPlayerState && player.getPlayerState() === 1 && !isPaused) {
+        updateProgress();
+      }
+    }, 500);
+  </script>
+</body>
+</html>
