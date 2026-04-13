@@ -211,11 +211,436 @@
       .progress-stats { gap: 40px; }
     }
 
-     .bgimg {
+      .bgimg {
   background-image:linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)), /* 白色，50%透明度 */
     url("https://live.staticflickr.com/3385/3413407724_b65cc330a0_b.jpg");
   width: 100%;
 }
+
+    /* Quiz Styles */
+    .quiz-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      z-index: 2000;
+      overflow-y: auto;
+      padding: 20px;
+    }
+    .quiz-overlay.active {
+      display: block;
+      animation: fadeIn 0.3s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    .quiz-container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 30px;
+    }
+    .quiz-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      color: white;
+    }
+    .quiz-close {
+      background: rgba(255,255,255,0.2);
+      border: none;
+      color: white;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      font-size: 1.5rem;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .quiz-close:hover {
+      background: rgba(255,255,255,0.3);
+      transform: scale(1.1);
+    }
+    .progress-bar-container {
+      background: rgba(255,255,255,0.2);
+      border-radius: 20px;
+      height: 12px;
+      margin-bottom: 30px;
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #ffd700, #ff8c00);
+      border-radius: 20px;
+      transition: width 0.5s ease;
+      width: 0%;
+    }
+    .timer-display {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255,255,255,0.15);
+      padding: 10px 20px;
+      border-radius: 25px;
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
+    .timer-display.warning {
+      background: rgba(248, 113, 113, 0.6);
+      animation: pulse 0.5s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+    .question-card {
+      background: white;
+      border-radius: 24px;
+      padding: 40px;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+      animation: slideUp 0.4s ease;
+    }
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .question-number {
+      color: #c084fc;
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 15px;
+    }
+    .question-text {
+      font-size: 2.2rem;
+      color: #4b2e5a;
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+    .question-hint {
+      color: #888;
+      font-size: 1.1rem;
+      margin-bottom: 30px;
+    }
+    .options-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+    }
+    .option-btn {
+      background: #f8f9fc;
+      border: 2px solid #e5e7eb;
+      border-radius: 16px;
+      padding: 20px;
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: #4b2e5a;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .option-btn:hover:not(:disabled) {
+      border-color: #c084fc;
+      background: #fdf5ff;
+      transform: translateY(-3px);
+    }
+    .option-btn.correct {
+      background: #4ade80;
+      border-color: #22c55e;
+      color: white;
+      animation: correctPop 0.5s ease;
+    }
+    @keyframes correctPop {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+    .option-btn.wrong {
+      background: #f87171;
+      border-color: #ef4444;
+      color: white;
+      animation: shake 0.4s ease;
+    }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20% { transform: translateX(-8px); }
+      40% { transform: translateX(8px); }
+      60% { transform: translateX(-8px); }
+      80% { transform: translateX(8px); }
+    }
+    .feedback-msg {
+      margin-top: 25px;
+      padding: 15px 25px;
+      border-radius: 12px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      display: none;
+    }
+    .feedback-msg.show {
+      display: block;
+      animation: fadeIn 0.3s ease;
+    }
+    .feedback-msg.correct {
+      background: #dcfce7;
+      color: #166534;
+    }
+    .feedback-msg.wrong {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+    .next-btn {
+      margin-top: 20px;
+      padding: 14px 40px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      background: linear-gradient(135deg, #c084fc, #a855f7);
+      color: white;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: none;
+    }
+    .next-btn.show {
+      display: inline-block;
+    }
+    .next-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(168,85,247,0.4);
+    }
+    .quiz-score {
+      text-align: center;
+      color: white;
+    }
+    .score-circle {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      background: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 30px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+    .score-number {
+      font-size: 3.5rem;
+      font-weight: 700;
+      color: #c084fc;
+    }
+    .score-label {
+      color: #888;
+      font-size: 0.9rem;
+    }
+    .result-title {
+      font-size: 2.5rem;
+      margin-bottom: 15px;
+    }
+    .result-stats {
+      font-size: 1.3rem;
+      opacity: 0.9;
+      margin-bottom: 30px;
+    }
+
+    /* Flashcard Styles */
+    .flashcard-section {
+      text-align: center;
+      padding: 60px 20px;
+    }
+    .flashcard-container {
+      perspective: 1000px;
+      width: 400px;
+      height: 280px;
+      margin: 0 auto 40px;
+      cursor: pointer;
+    }
+    .flashcard {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .flashcard.flipped {
+      transform: rotateY(180deg);
+    }
+    .flashcard-face {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      border-radius: 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 20px 60px rgba(192, 132, 252, 0.25);
+    }
+    .flashcard-front {
+      background: linear-gradient(135deg, #c084fc 0%, #a855f7 100%);
+      color: white;
+    }
+    .flashcard-back {
+      background: white;
+      transform: rotateY(180deg);
+      border: 3px solid #c084fc;
+    }
+    .flashcard-korean {
+      font-size: 3.5rem;
+      font-weight: 700;
+      margin-bottom: 15px;
+    }
+    .flashcard-pronunciation {
+      font-size: 1.5rem;
+      opacity: 0.9;
+    }
+    .flashcard-meaning {
+      font-size: 2rem;
+      color: #4b2e5a;
+      font-weight: 600;
+    }
+    .flashcard-example {
+      font-size: 1.1rem;
+      color: #888;
+      margin-top: 15px;
+      font-style: italic;
+    }
+    .flashcard-example-trans {
+      font-size: 1rem;
+      color: #a855f7;
+      margin-top: 8px;
+    }
+    .flashcard-audio-btn {
+      position: absolute;
+      bottom: 20px;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #c084fc;
+      border: none;
+      cursor: pointer;
+      font-size: 1.4rem;
+      color: white;
+      transition: all 0.3s;
+    }
+    .flashcard-audio-btn:hover {
+      background: #a855f7;
+      transform: scale(1.1);
+    }
+    .flashcard-audio-btn.front {
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(255,255,255,0.25);
+      color: white;
+      border: 2px solid white;
+    }
+    .flashcard-audio-btn.front:hover {
+      background: rgba(255,255,255,0.4);
+      transform: translateX(-50%) scale(1.1);
+    }
+    .flashcard-back .flashcard-audio-btn {
+      right: 20px;
+      background: #f0d9ff;
+      color: #a855f7;
+    }
+    .flashcard-nav {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 30px;
+      margin-top: 20px;
+    }
+    .flashcard-nav-btn {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      border: 2px solid #c084fc;
+      background: white;
+      color: #c084fc;
+      font-size: 1.5rem;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .flashcard-nav-btn:hover:not(:disabled) {
+      background: #c084fc;
+      color: white;
+      transform: scale(1.1);
+    }
+    .flashcard-nav-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+    .flashcard-counter {
+      font-size: 1.2rem;
+      color: #888;
+      min-width: 80px;
+      text-align: center;
+    }
+    .flashcard-hint {
+      color: #888;
+      margin-top: 20px;
+      font-size: 1rem;
+    }
+    .start-flashcards-btn {
+      margin-top: 30px;
+      padding: 18px 50px;
+      font-size: 1.3rem;
+      font-weight: 600;
+      background: linear-gradient(135deg, #c084fc, #a855f7);
+      color: white;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: 0 10px 30px rgba(168, 85, 247, 0.3);
+    }
+    .start-flashcards-btn:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 15px 40px rgba(168, 85, 247, 0.4);
+    }
+    .flashcard-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #fdf4ff 0%, #faf5ff 100%);
+      z-index: 2000;
+      padding: 20px;
+      overflow-y: auto;
+    }
+    .flashcard-overlay.active {
+      display: block;
+      animation: fadeIn 0.3s ease;
+    }
+    .flashcard-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: white;
+      border: 2px solid #c084fc;
+      color: #c084fc;
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      font-size: 1.5rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      z-index: 10;
+    }
+    .flashcard-close:hover {
+      background: #c084fc;
+      color: white;
+      transform: rotate(90deg);
+    }
   </style>
 </head>
 <body>
@@ -282,6 +707,41 @@
     </div>
   </section>
 
+  <section class="flashcard-section" style="background:#f9f9fc;">
+    <div class="container">
+      <h2 class="section-title">閃卡學習模式</h2>
+      <p style="color:#666; font-size:1.2rem; margin-bottom:30px;">點擊卡片即可翻轉，點擊喇叭按鈕播放發音</p>
+      <button class="start-flashcards-btn" onclick="openFlashcards()">開始閃卡學習 →</button>
+    </div>
+  </section>
+
+  <div class="flashcard-overlay" id="flashcardOverlay">
+    <button class="flashcard-close" onclick="closeFlashcards()">×</button>
+    <div class="container" style="padding-top:80px; text-align:center;">
+      <div class="flashcard-container" onclick="flipCard()">
+        <div class="flashcard" id="flashcard">
+          <div class="flashcard-face flashcard-front">
+            <span class="flashcard-korean" id="fcKorean">김치</span>
+            <span class="flashcard-pronunciation" id="fcPronunciation">kimchi</span>
+            <button class="flashcard-audio-btn front" onclick="event.stopPropagation(); playVocabAudio()">🔊</button>
+          </div>
+          <div class="flashcard-face flashcard-back">
+            <span class="flashcard-meaning" id="fcMeaning">泡菜</span>
+            <span class="flashcard-example" id="fcExample">김치는 한국의 대표적인 음식입니다.</span>
+            <span class="flashcard-example-trans" id="fcExampleTrans">泡菜是韓國的代表性食物。</span>
+            <button class="flashcard-audio-btn" onclick="event.stopPropagation(); playSentenceAudio()">🔊</button>
+          </div>
+        </div>
+      </div>
+      <div class="flashcard-nav">
+        <button class="flashcard-nav-btn" id="fcPrevBtn" onclick="prevCard()">←</button>
+        <span class="flashcard-counter" id="fcCounter">1 / 10</span>
+        <button class="flashcard-nav-btn" id="fcNextBtn" onclick="nextCard()">→</button>
+      </div>
+      <p class="flashcard-hint">💡 點擊卡片即可翻轉</p>
+    </div>
+  </div>
+
   <section style="background:#f9f9fc;">
     <div class="container">
       <h2 class="section-title">你的學習進度</h2>
@@ -305,7 +765,7 @@
   <section>
     <div class="container" style="text-align:center;">
       <h2 class="section-title">準備好挑戰自己嗎？</h2>
-      <a href="#" class="cta-btn">開始今日單字挑戰 →</a>
+      <a href="#" class="cta-btn" onclick="startQuiz(); return false;">開始今日單字挑戰 →</a>
       <p style="margin-top:30px; color:#666; font-size:1.1rem;">
         完成每日挑戰，解鎖更多可愛貼圖與AI伴侶的甜甜稱讚 💕
       </p>
@@ -317,6 +777,327 @@
       <p>讓每個單字都變成甜蜜回憶 • <span class="accent">공부하자</span> ♥ • 香港 K-learners • 2026</p>
     </div>
   </footer>
+
+  <div class="quiz-overlay" id="quizOverlay">
+    <div class="quiz-container">
+      <div class="quiz-header">
+        <button class="quiz-close" onclick="closeQuiz()">×</button>
+        <div class="timer-display" id="timerDisplay">
+          ⏱️ <span id="timer">20</span>s
+        </div>
+      </div>
+      <div class="progress-bar-container">
+        <div class="progress-bar-fill" id="progressBar"></div>
+      </div>
+      
+      <div id="quizContent">
+        <div class="question-card" id="questionCard">
+          <div class="question-number" id="questionNumber">問題 1/10</div>
+          <div class="question-text" id="questionText">Loading...</div>
+          <div class="question-hint" id="questionHint"></div>
+          <div class="options-grid" id="optionsGrid"></div>
+          <div class="feedback-msg" id="feedbackMsg"></div>
+          <button class="next-btn" id="nextBtn" onclick="nextQuestion()">下一題 →</button>
+        </div>
+      </div>
+      
+      <div id="quizResults" style="display:none;">
+        <div class="quiz-score">
+          <div class="score-circle">
+            <span class="score-number" id="scoreNumber">0</span>
+            <span class="score-label">分</span>
+          </div>
+          <div class="result-title" id="resultTitle">太棒了！</div>
+          <div class="result-stats" id="resultStats">你答對了 0/10 題</div>
+          <button class="next-btn show" onclick="restartQuiz()">再玩一次 🔄</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const vocabQuestions = [
+      { question: "김치", answer: "泡菜", options: ["泡菜", "拌飯", "五花肉", "炒年糕"] },
+      { question: "떡볶이", answer: "炒年糕", options: ["泡菜", "炒年糕", "炸醬麵", "烤肉"] },
+      { question: "비빔밥", answer: "拌飯", options: ["湯飯", "拌飯", "冷麵", "石鍋拌飯"] },
+      { question: "삼겹살", answer: "五花肉", options: ["牛肉", "五花肉", "排骨", "雞肉"] },
+      { question: "여행", answer: "旅行", options: ["旅行", "機場", "酒店", "地圖"] },
+      { question: "공항", answer: "機場", options: ["港口", "機場", "車站", "海灘"] },
+      { question: "호텔", answer: "酒店", options: ["民宿", "酒店", "宿舍", "家"] },
+      { question: "행복해", answer: "幸福", options: ["悲傷", "幸福", "生氣", "害怕"] },
+      { question: "사랑해", answer: "我愛你", options: ["再見", "對不起", "我愛你", "謝謝"] },
+      { question: "피곤해", answer: "累了", options: ["開心", "累了", "餓了", "渴了"] },
+    ];
+
+    let currentQuestion = 0;
+    let score = 0;
+    let timeLeft = 20;
+    let timerInterval = null;
+    let answered = false;
+
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    
+    function playSound(type) {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      
+      if (type === 'correct') {
+        osc.frequency.setValueAtTime(523, audioCtx.currentTime);
+        osc.frequency.setValueAtTime(659, audioCtx.currentTime + 0.1);
+        osc.frequency.setValueAtTime(784, audioCtx.currentTime + 0.2);
+        gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.4);
+      } else if (type === 'wrong') {
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(200, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.3);
+        gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.3);
+      } else if (type === 'tick') {
+        osc.frequency.setValueAtTime(800, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.05);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.05);
+      } else if (type === 'win') {
+        const notes = [523, 587, 659, 698, 784, 880, 988, 1047];
+        notes.forEach((freq, i) => {
+          const o = audioCtx.createOscillator();
+          const g = audioCtx.createGain();
+          o.connect(g);
+          g.connect(audioCtx.destination);
+          o.frequency.setValueAtTime(freq, audioCtx.currentTime + i * 0.1);
+          g.gain.setValueAtTime(0.2, audioCtx.currentTime + i * 0.1);
+          g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + i * 0.1 + 0.3);
+          o.start(audioCtx.currentTime + i * 0.1);
+          o.stop(audioCtx.currentTime + i * 0.1 + 0.3);
+        });
+      }
+    }
+
+    function startQuiz() {
+      document.getElementById('quizOverlay').classList.add('active');
+      currentQuestion = 0;
+      score = 0;
+      loadQuestion();
+    }
+
+    function closeQuiz() {
+      document.getElementById('quizOverlay').classList.remove('active');
+      if (timerInterval) clearInterval(timerInterval);
+    }
+
+    function loadQuestion() {
+      answered = false;
+      const q = vocabQuestions[currentQuestion];
+      document.getElementById('questionNumber').textContent = `問題 ${currentQuestion + 1}/10`;
+      document.getElementById('questionText').textContent = q.question;
+      document.getElementById('questionHint').textContent = `這個韓文的意思是什麼？`;
+      document.getElementById('progressBar').style.width = `${(currentQuestion / 10) * 100}%`;
+      document.getElementById('feedbackMsg').className = 'feedback-msg';
+      document.getElementById('nextBtn').classList.remove('show');
+      
+      const optionsGrid = document.getElementById('optionsGrid');
+      optionsGrid.innerHTML = '';
+      
+      const shuffled = [...q.options].sort(() => Math.random() - 0.5);
+      shuffled.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.className = 'option-btn';
+        btn.textContent = opt;
+        btn.onclick = () => checkAnswer(opt, q.answer, btn);
+        optionsGrid.appendChild(btn);
+      });
+
+      startTimer();
+    }
+
+    function startTimer() {
+      timeLeft = 20;
+      const timerDisplay = document.getElementById('timerDisplay');
+      const timerEl = document.getElementById('timer');
+      timerEl.textContent = timeLeft;
+      timerDisplay.classList.remove('warning');
+      
+      if (timerInterval) clearInterval(timerInterval);
+      
+      timerInterval = setInterval(() => {
+        timeLeft--;
+        timerEl.textContent = timeLeft;
+        if (timeLeft <= 5) playSound('tick');
+        
+        if (timeLeft <= 10) {
+          timerDisplay.classList.add('warning');
+        }
+        
+        if (timeLeft <= 0) {
+          clearInterval(timerInterval);
+          handleTimeout();
+        }
+      }, 1000);
+    }
+
+    function checkAnswer(selected, correct, btn) {
+      if (answered) return;
+      answered = true;
+      clearInterval(timerInterval);
+
+      const buttons = document.querySelectorAll('.option-btn');
+      buttons.forEach(b => b.disabled = true);
+
+      if (selected === correct) {
+        btn.classList.add('correct');
+        score += 10;
+        playSound('correct');
+        document.getElementById('feedbackMsg').textContent = '🎉 正確！太厲害了！';
+        document.getElementById('feedbackMsg').className = 'feedback-msg show correct';
+      } else {
+        btn.classList.add('wrong');
+        playSound('wrong');
+        buttons.forEach(b => {
+          if (b.textContent === correct) b.classList.add('correct');
+        });
+        document.getElementById('feedbackMsg').textContent = `❌ 正確答案是：${correct}`;
+        document.getElementById('feedbackMsg').className = 'feedback-msg show wrong';
+      }
+
+      document.getElementById('nextBtn').classList.add('show');
+    }
+
+    function handleTimeout() {
+      answered = true;
+      const q = vocabQuestions[currentQuestion];
+      const buttons = document.querySelectorAll('.option-btn');
+      buttons.forEach(b => b.disabled = true);
+      buttons.forEach(b => {
+        if (b.textContent === q.answer) b.classList.add('correct');
+      });
+      document.getElementById('feedbackMsg').textContent = `⏰ 時間到！正確答案是：${q.answer}`;
+      document.getElementById('feedbackMsg').className = 'feedback-msg show wrong';
+      document.getElementById('nextBtn').classList.add('show');
+    }
+
+    function nextQuestion() {
+      currentQuestion++;
+      if (currentQuestion >= 10) {
+        showResults();
+      } else {
+        loadQuestion();
+      }
+    }
+
+function showResults() {
+      document.getElementById('quizContent').style.display = 'none';
+      document.getElementById('quizResults').style.display = 'block';
+      document.getElementById('progressBar').style.width = '100%';
+      document.getElementById('scoreNumber').textContent = score;
+      playSound('win');
+      
+      const resultTitle = document.getElementById('resultTitle');
+      if (score >= 80) {
+        resultTitle.textContent = '🎉 太厲害了！';
+      } else if (score >= 50) {
+        resultTitle.textContent = '👍 做得好！';
+      } else {
+        resultTitle.textContent = '💪 繼續努力！';
+      }
+      
+      document.getElementById('resultStats').textContent = `你答對了 ${score/10}/10 題`;
+    }
+
+    function restartQuiz() {
+      document.getElementById('quizContent').style.display = 'block';
+      document.getElementById('quizResults').style.display = 'none';
+      startQuiz();
+    }
+
+    const flashcardData = [
+      { korean: "김치", pronunciation: "kimchi", meaning: "泡菜", example: "김치는 한국의 대표적인 음식입니다.", exampleTranslation: "泡菜是韓國的代表性食物。" },
+      { korean: "떡볶이", pronunciation: "tteokbokki", meaning: "辣炒年糕", example: "떡볶이는 매콤하고 맛있어요.", exampleTranslation: "辣炒年糕又辣又好吃。" },
+      { korean: "비빔밥", pronunciation: "bibimbap", meaning: "拌飯", example: "비빔밥은 영양분이 풍부해요.", exampleTranslation: "拌飯營養豐富。" },
+      { korean: "삼겹살", pronunciation: "samgyeopsal", meaning: "五花肉", example: "삼겹살을 구워먹었어요.", exampleTranslation: "我烤五花肉來吃。" },
+      { korean: "여행", pronunciation: "yeohaeng", meaning: "旅行", example: "여행은 정말 좋았어요.", exampleTranslation: "旅行真的很好。" },
+      { korean: "공항", pronunciation: "gonghang", meaning: "機場", example: "공항에서 친구와 만났어요.", exampleTranslation: "我在機場和朋友見面。" },
+      { korean: "호텔", pronunciation: "hotel", meaning: "酒店", example: "호텔에서 잘 자았어요.", exampleTranslation: "我在酒店睡得很好。" },
+      { korean: "행복해", pronunciation: "haengbokhae", meaning: "幸福", example: "오늘은 정말 행복해요.", exampleTranslation: "今天真的很幸福。" },
+      { korean: "사랑해", pronunciation: "saranghae", meaning: "我愛你", example: "사랑해요, 친구야!", exampleTranslation: "愛你啊，朋友！" },
+      { korean: "피곤해", pronunciation: "pigonhae", meaning: "累了", example: "오늘은 너무 피곤해요.", exampleTranslation: "今天太累了。" },
+    ];
+
+    let currentCard = 0;
+
+    function openFlashcards() {
+      document.getElementById('flashcardOverlay').classList.add('active');
+      currentCard = 0;
+      updateCard();
+    }
+
+    function closeFlashcards() {
+      document.getElementById('flashcardOverlay').classList.remove('active');
+      document.getElementById('flashcard').classList.remove('flipped');
+    }
+
+    function flipCard() {
+      document.getElementById('flashcard').classList.toggle('flipped');
+    }
+
+    function updateCard() {
+      const card = flashcardData[currentCard];
+      document.getElementById('fcKorean').textContent = card.korean;
+      document.getElementById('fcPronunciation').textContent = card.pronunciation;
+      document.getElementById('fcMeaning').textContent = card.meaning;
+      document.getElementById('fcExample').textContent = card.example;
+      document.getElementById('fcExampleTrans').textContent = card.exampleTranslation;
+      document.getElementById('fcCounter').textContent = `${currentCard + 1} / ${flashcardData.length}`;
+      document.getElementById('fcPrevBtn').disabled = currentCard === 0;
+      document.getElementById('fcNextBtn').disabled = currentCard === flashcardData.length - 1;
+    }
+
+    function prevCard() {
+      if (currentCard > 0) {
+        currentCard--;
+        document.getElementById('flashcard').classList.remove('flipped');
+        setTimeout(updateCard, 150);
+      }
+    }
+
+    function nextCard() {
+      if (currentCard < flashcardData.length - 1) {
+        currentCard++;
+        document.getElementById('flashcard').classList.remove('flipped');
+        setTimeout(updateCard, 150);
+      }
+    }
+
+    function playVocabAudio() {
+      const card = flashcardData[currentCard];
+      const utterance = new SpeechSynthesisUtterance(card.korean);
+      utterance.lang = 'ko-KR';
+      utterance.rate = 0.8;
+      speechSynthesis.speak(utterance);
+    }
+
+    function playSentenceAudio() {
+      const card = flashcardData[currentCard];
+      const utterance = new SpeechSynthesisUtterance(card.example);
+      utterance.lang = 'ko-KR';
+      utterance.rate = 0.7;
+      speechSynthesis.speak(utterance);
+    }
+
+    document.addEventListener('keydown', function(e) {
+      if (!document.getElementById('flashcardOverlay').classList.contains('active')) return;
+      if (e.key === 'ArrowLeft') prevCard();
+      if (e.key === 'ArrowRight') nextCard();
+      if (e.key === ' ' || e.key === 'Enter') flipCard();
+    });
+  </script>
 
 </body>
 </html>
