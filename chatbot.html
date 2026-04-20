@@ -4,7 +4,46 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Chatbot UI</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: rgba(26, 26, 46, 0.95);
+      backdrop-filter: blur(10px);
+      padding: 16px 0;
+      z-index: 1000;
+      border-bottom: 1px solid rgba(99, 102, 241, 0.2);
+    }
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .logo {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: #a5b4fc;
+      text-decoration: none;
+    }
+    .nav-links {
+      display: flex;
+      gap: 32px;
+    }
+    .nav-links a {
+      color: #e2e8f0;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s;
+    }
+    .nav-links a:hover, .nav-links a.active {
+      color: #a5b4fc;
+    }
     * {
       margin: 0;
       padding: 0;
@@ -206,6 +245,21 @@
   </style>
 </head>
 <body>
+  <nav>
+    <div class="nav-container">
+      <a href="https://yammi19.github.io" class="logo">Yammi19</a>
+      <div class="nav-links">
+        <a href="https://yammi19.github.io">Home</a>
+        <a href="vocab.html">Vocabulary</a>
+        <a href="https://yammi19.github.io/ko/Chatbot.html" class="active">Chatbot</a>
+        <a href="https://yammi19.github.io/ko/Resource.html">Resources</a>
+        <a href="https://yammi19.github.io/ko/Contact.html">Contact</a>
+        <a href="https://yammi19.github.io/ko/stats.html">Statistics</a>
+      </div>
+    </div>
+  </nav>
+
+  <main style="padding-top: 80px;">
   <div class="chatbot-container">
     <div class="chatbot-header">
       <div class="chatbot-avatar">🤖</div>
@@ -234,6 +288,11 @@
       </button>
     </div>
   </div>
+  </main>
+
+  <footer style="text-align: center; padding: 30px; color: #64748b;">
+    <p>© 2026 Yammi19 • K-Learners Community</p>
+  </footer>
 
   <script>
     const messagesContainer = document.getElementById('messages');
