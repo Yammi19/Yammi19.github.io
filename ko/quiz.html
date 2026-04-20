@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>影片問答挑戰 - Video Quiz</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Inter', 'Noto Sans KR', sans-serif;
+      background: #1a1625;
+      color: #ffffff;
+      min-height: 100vh;
+    }
+
+    /* Header */
+    header {
+      background: linear-gradient(135deg, #2d1f4e 0%, #1a1625 100%);
+      padding: 20px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #c084fc;
+      text-decoration: none;
+    }
+    .score-display {
+      background: rgba(192, 132, 252, 0.2);
+      padding: 10px 24px;
+      border-radius: 30px;
+      font-weight: 600;
+      color: #c084fc;
+    }
+
+    /* Main Content */
+    .main-container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 40px 30px;
+    }
+
+    /* Video Container */
+    .video-container {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16/9;
+      background: #000;
+      border-radius: 16px;
+      overflow: hidden;
+      margin-bottom: 30px;
+    }
+    .video-container video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* Quiz Overlay Popup */
+    .quiz-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(26, 22, 37, 0.95);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+    }
+    .quiz-overlay.active {
+      display: flex;
+    }
+
+    .quiz-popup {
+      background: linear-gradient(145deg, #2d1f4e, #3d2a5f);
+      border-radius: 24px;
+      padding: 40px 50px;
+      max-width: 500px;
+      width: 90%;
+      text-align: center;
+      box-shadow: 0 25px 80px rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(192, 132, 252, 0.3);
+      animation: popIn 0.3s ease;
+    }
+    @keyframes popIn {
+      from { transform: scale(0.8); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .quiz-question {
+      font-size: 1.4rem;
+      margin-bottom: 30px;
+      line-height: 1.6;
+    }
+    .quiz-options {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    .quiz-option {
+      background: rgba(255, 255, 255, 0.08);
+      border: 2px solid rgba(255, 255, 255, 0.15);
+      border-radius: 12px;
+      padding: 16px 24px;
+      font-size: 1.1rem;
+      color: #fff;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-align: left;
+    }
+    .quiz-option:hover {
+      background: rgba(192, 132, 252, 0.2);
+      border-color: #c084fc;
+    }
+    .quiz-option.correct {
+      background: #22c55e;
+      border-color: #22c55e;
+    }
+    .quiz-option.wrong {
+      background: #ef4444;
+      border-color: #ef4444;
+    }
+    .quiz-option.disabled {
+      pointer-events: none;
+      opacity: 0.6;
+    }
+
+    .feedback-msg {
+      margin-top: 20px;
+      font-size: 1.2rem;
+      font-weight: 600;
+      min-height: 35px;
+    }
+    .feedback-msg.correct {
+      color: #22c55e;
+    }
+    .feedback-msg.wrong {
+      color: #ef4444;
+    }
+
+    .continue-btn {
+      margin-top: 25px;
+      padding: 14px 40px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      background: #c084fc;
+      color: white;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .continue-btn:hover {
+      background: #a855f7;
+      transform: translateY(-2px);
+    }
+
+    /* Progress Bar */
+    .progress-container {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      height: 8px;
+      margin-bottom: 20px;
+      overflow: hidden;
+    }
+    .progress-bar {
+      background: linear-gradient(90deg, #c084fc, #a855f7);
+      height: 100%;
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    /* Quiz List */
+    .quiz-info {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 16px;
+      padding: 30px;
+    }
+    .quiz-info h2 {
+      font-size: 1.8rem;
+      margin-bottom: 20px;
+      color: #c084fc;
+    }
+    .quiz-timestamps {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .timestamp-item {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding: 15px 20px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+      font-size: 1rem;
+    }
+    .timestamp-item.completed {
+      background: rgba(34, 197, 94, 0.15);
+    }
+    .timestamp-item.completed::before {
+      content: "✓";
+      color: #22c55e;
+      font-weight: bold;
+    }
+    .timestamp {
+      background: #c084fc;
+      color: #1a1625;
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+    .status {
+      margin-left: auto;
+      font-size: 0.9rem;
+      opacity: 0.6;
+    }
+
+    /* Controls */
+    .video-controls {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 20px;
+      background: linear-gradient(transparent, rgba(0,0,0,0.8));
+      display: flex;
+      gap: 15px;
+      align-items: center;
+    }
+    .control-btn {
+      background: rgba(255, 255, 255, 0.2);
+      border: none;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background 0.2s;
+    }
+    .control-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+    .time-display {
+      margin-left: auto;
+      font-weight: 500;
+    }
+
+    /* Results Modal */
+    .results-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(26, 22, 37, 0.98);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 200;
+    }
+    .results-modal.active {
+      display: flex;
+    }
+    .results-content {
+      text-align: center;
+      max-width: 500px;
+      padding: 50px;
+    }
+    .results-content h2 {
+      font-size: 3rem;
+      margin-bottom: 20px;
+      color: #c084fc;
+    }
+    .final-score {
+      font-size: 5rem;
+      font-weight: 700;
+      margin: 30px 0;
+      background: linear-gradient(135deg, #c084fc, #a855f7);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .results-content p {
+      font-size: 1.3rem;
+      opacity: 0.8;
+      margin-bottom: 40px;
+    }
+    .restart-btn {
+      padding: 16px 50px;
+      font-size: 1.2rem;
+      font-weight: 600;
+      background: #c084fc;
+      color: white;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .restart-btn:hover {
+      background: #a855f7;
+      transform: translateY(-2px);
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <a href="index.html" class="logo">공부하자 💕</a>
+    <div class="score-display">得分: <span id="score">0</span> / <span id="total">5</span></div>
+  </header>
+
+  <div class="main-container">
+    <div class="progress-container">
+      <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <div class="video-container">
+      <video id="videoPlayer" src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" preload="metadata"></video>
+      
+      <!-- Quiz Popup -->
+      <div class="quiz-overlay" id="quizOverlay">
+        <div class="quiz-popup">
+          <div class="quiz-question" id="quizQuestion"></div>
+          <div class="quiz-options" id="quizOptions"></div>
+          <div class="feedback-msg" id="feedbackMsg"></div>
+          <button class="continue-btn" id="continueBtn" style="display:none;" onclick="resumeVideo()">繼續 ▶</button>
+        </div>
+      </div>
+
+      <div class="video-controls">
+        <button class="control-btn" onclick="togglePlay()">▶</button>
+        <button class="control-btn" onclick="skipBackward()">-10s</button>
+        <button class="control-btn" onclick="skipForward()">+10s</button>
+        <span class="time-display" id="timeDisplay">0:00 / 0:00</span>
+      </div>
+    </div>
+
+    <div class="quiz-info">
+      <h2>📝 問答時間表</h2>
+      <div class="quiz-timestamps" id="quizTimestamps"></div>
+    </div>
+  </div>
+
+  <!-- Results Modal -->
+  <div class="results-modal" id="resultsModal">
+    <div class="results-content">
+      <h2>🎉 測驗完成！</h2>
+      <div class="final-score" id="finalScore">0/5</div>
+      <p id="resultMessage">表現不錯！繼續努力！</p>
+      <button class="restart-btn" onclick="restartQuiz()">重新開始</button>
+    </div>
+  </div>
+
+  <script>
+    const quizzes = [
+      {
+        time: 10,
+        question: "這是一部什麼類型的影片？",
+        options: ["動作片", "動畫片", "紀錄片", "喜劇片"],
+        correct: 1
+      },
+      {
+        time: 60,
+        question: "影片中出現的主要角色是什麼動物？",
+        options: ["兔子", "松鼠", "鳥兒", "狐狸"],
+        correct: 0
+      },
+      {
+        time: 120,
+        question: "這部影片的標題是什麼？",
+        options: ["Big Buck Bunny", "Bunny Adventure", "The Rabbit", "Forest Friends"],
+        correct: 0
+      },
+      {
+        time: 180,
+        question: "影片的風格是？",
+        options: ["3D動畫", "2D動畫", "定格動畫", "真人演出"],
+        correct: 0
+      },
+      {
+        time: 240,
+        question: "這是一個關於什麼故事？",
+        options: ["恐怖故事", "冒險故事", "愛情故事", "懸疑故事"],
+        correct: 1
+      }
+    ];
+
+    let currentQuizIndex = 0;
+    let score = 0;
+    let videoPausedForQuiz = false;
+    let answeredCurrentQuiz = false;
+
+    const video = document.getElementById('videoPlayer');
+    const quizOverlay = document.getElementById('quizOverlay');
+    const quizQuestion = document.getElementById('quizQuestion');
+    const quizOptions = document.getElementById('quizOptions');
+    const feedbackMsg = document.getElementById('feedbackMsg');
+    const continueBtn = document.getElementById('continueBtn');
+    const scoreDisplay = document.getElementById('score');
+    const totalDisplay = document.getElementById('total');
+    const progressBar = document.getElementById('progressBar');
+    const timeDisplay = document.getElementById('timeDisplay');
+    const resultsModal = document.getElementById('resultsModal');
+
+    totalDisplay.textContent = quizzes.length;
+
+    function initQuizList() {
+      const container = document.getElementById('quizTimestamps');
+      quizzes.forEach((quiz, index) => {
+        const item = document.createElement('div');
+        item.className = 'timestamp-item';
+        item.id = `quiz-${index}`;
+        item.innerHTML = `
+          <span class="timestamp">${formatTime(quiz.time)}</span>
+          <span class="status">尚未回答</span>
+        `;
+        container.appendChild(item);
+      });
+    }
+
+    function formatTime(seconds) {
+      const mins = Math.floor(seconds / 60);
+      const secs = seconds % 60;
+      return `${mins}:${secs.toString().padStart(2, '0')}`;
+    }
+
+    function formatDuration(seconds) {
+      const mins = Math.floor(seconds / 60);
+      const secs = Math.floor(seconds % 60);
+      return `${mins}:${secs.toString().padStart(2, '0')}`;
+    }
+
+    video.addEventListener('timeupdate', () => {
+      const currentTime = Math.floor(video.currentTime);
+      timeDisplay.textContent = `${formatDuration(video.currentTime)} / ${formatDuration(video.duration)}`;
+
+      const progress = (currentTime / video.duration) * 100;
+      progressBar.style.width = `${progress}%`;
+
+      if (currentQuizIndex < quizzes.length) {
+        const quiz = quizzes[currentQuizIndex];
+        if (currentTime >= quiz.time && !answeredCurrentQuiz) {
+          showQuiz();
+        }
+      }
+    });
+
+    function showQuiz() {
+      if (currentQuizIndex >= quizzes.length) {
+        showResults();
+        return;
+      }
+
+      const quiz = quizzes[currentQuizIndex];
+      video.pause();
+      videoPausedForQuiz = true;
+      answeredCurrentQuiz = false;
+
+      quizQuestion.textContent = quiz.question;
+      quizOptions.innerHTML = '';
+      feedbackMsg.textContent = '';
+      feedbackMsg.className = 'feedback-msg';
+      continueBtn.style.display = 'none';
+
+      quiz.options.forEach((option, index) => {
+        const btn = document.createElement('button');
+        btn.className = 'quiz-option';
+        btn.textContent = option;
+        btn.onclick = () => checkAnswer(index);
+        quizOptions.appendChild(btn);
+      });
+
+      quizOverlay.classList.add('active');
+    }
+
+    function checkAnswer(selectedIndex) {
+      if (answeredCurrentQuiz) return;
+      answeredCurrentQuiz = true;
+
+      const quiz = quizzes[currentQuizIndex];
+      const options = document.querySelectorAll('.quiz-option');
+
+      options.forEach(opt => opt.classList.add('disabled'));
+
+      if (selectedIndex === quiz.correct) {
+        options[selectedIndex].classList.add('correct');
+        feedbackMsg.textContent = '✅ 正確！';
+        feedbackMsg.className = 'feedback-msg correct';
+        score++;
+        scoreDisplay.textContent = score;
+      } else {
+        options[selectedIndex].classList.add('wrong');
+        options[quiz.correct].classList.add('correct');
+        feedbackMsg.textContent = '❌ 錯誤！正確答案是: ' + quiz.options[quiz.correct];
+        feedbackMsg.className = 'feedback-msg wrong';
+      }
+
+      document.getElementById(`quiz-${currentQuizIndex}`).classList.add('completed');
+      document.getElementById(`quiz-${currentQuizIndex}`).querySelector('.status').textContent = '已完成';
+
+      continueBtn.style.display = 'inline-block';
+    }
+
+    function resumeVideo() {
+      quizOverlay.classList.remove('active');
+      currentQuizIndex++;
+      video.play();
+      videoPausedForQuiz = false;
+    }
+
+    function togglePlay() {
+      if (video.paused) {
+        video.play();
+      } else {
+        video.pause();
+      }
+    }
+
+    function skipBackward() {
+      video.currentTime = Math.max(0, video.currentTime - 10);
+    }
+
+    function skipForward() {
+      video.currentTime = Math.min(video.duration, video.currentTime + 10);
+    }
+
+    function showResults() {
+      document.getElementById('finalScore').textContent = `${score}/${quizzes.length}`;
+      
+      let message = '';
+      if (score === quizzes.length) {
+        message = '🎯 完美！全對！你是天才！';
+      } else if (score >= quizzes.length * 0.7) {
+        message = '🌟 做得很好！繼續保持！';
+      } else if (score >= quizzes.length * 0.4) {
+        message = '💪 不錯哦！再加油！';
+      } else {
+        message = '📚 再多看幾遍，你會做得更好！';
+      }
+      document.getElementById('resultMessage').textContent = message;
+      
+      resultsModal.classList.add('active');
+    }
+
+    function restartQuiz() {
+      currentQuizIndex = 0;
+      score = 0;
+      scoreDisplay.textContent = '0';
+      answeredCurrentQuiz = false;
+      resultsModal.classList.remove('active');
+      quizOverlay.classList.remove('active');
+      video.currentTime = 0;
+      
+      document.querySelectorAll('.timestamp-item').forEach(item => {
+        item.classList.remove('completed');
+        item.querySelector('.status').textContent = '尚未回答';
+      });
+      
+      video.play();
+    }
+
+    video.addEventListener('ended', () => {
+      if (currentQuizIndex < quizzes.length) {
+        showQuiz();
+      } else {
+        showResults();
+      }
+    });
+
+    initQuizList();
+  </script>
+
+</body>
+</html>

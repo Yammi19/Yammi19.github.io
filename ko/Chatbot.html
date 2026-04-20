@@ -321,18 +321,16 @@
       }
     }
 
-    .message.bot {
-      background: #f3e8ff;
-      color: #4b2e5a;
-      border-bottom-left-radius: 6px;
-      align-self: flex-start;
-    }
-    .message.bot strong { color: #a855f7; }
-    .message.bot em { color: #7c3aed; }
-    .message.bot {
-      position: relative;
-      padding-right: 40px;
-    }
+.message.assistant {
+  background: #f3e8ff;
+  color: #4b2e5a;
+  border-bottom-left-radius: 6px;
+  align-self: flex-start;
+  position: relative;
+  padding-right: 40px;
+}
+.message.assistant strong { color: #a855f7; }
+.message.assistant em { color: #7c3aed; }
 
     .message-speak-btn {
       position: absolute;
@@ -359,35 +357,35 @@
       transform: scale(1.15);
     }
 
-    .message.bot code {
+    .message.assistant code {
       background: #e9d5ff;
       padding: 2px 6px;
       border-radius: 4px;
       font-family: monospace;
       font-size: 0.85em;
     }
-    .message.bot pre {
+    .message.assistant pre {
       background: #e9d5ff;
       padding: 12px;
       border-radius: 8px;
       overflow-x: auto;
       margin: 8px 0;
     }
-    .message.bot pre code {
+    .message.assistant pre code {
       background: none;
       padding: 0;
     }
-    .message.bot ul, .message.bot ol {
+    .message.assistant ul, .message.assistant ol {
       margin: 8px 0;
       padding-left: 20px;
     }
-    .message.bot li {
+    .message.assistant li {
       margin: 4px 0;
     }
-    .message.bot a {
+    .message.assistant a {
       color: #a855f7;
     }
-    .message.bot blockquote {
+    .message.assistant blockquote {
       border-left: 3px solid #a855f7;
       margin: 8px 0;
       padding-left: 12px;
@@ -550,55 +548,7 @@
       50% { transform: scale(1.1); }
     }
 
-    .voice-recording-panel {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 12px 24px;
-      background: #fee2e2;
-      border-top: 1px solid #fecaca;
-    }
-
-    .recording-indicator {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .recording-dot {
-      color: #ef4444;
-      font-size: 14px;
-      animation: blink 1s infinite;
-    }
-
-    @keyframes blink {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.3; }
-    }
-
-    .recording-text {
-      color: #991b1b;
-      font-weight: 600;
-    }
-
-    .recording-time {
-      color: #991b1b;
-      font-family: monospace;
-    }
-
-    .voice-cancel-btn {
-      background: white;
-      border: 1px solid #ef4444;
-      color: #ef4444;
-      padding: 8px 16px;
-      border-radius: 20px;
-      cursor: pointer;
-      font-weight: 500;
-    }
-
-    .voice-cancel-btn:hover {
-      background: #fee2e2;
-    }
+    
 
     footer {
       padding: 30px 0;
@@ -789,12 +739,9 @@
         <div class="quick-replies" id="quickReplies"></div>
 
         <div class="chat-input-area">
-          <button class="voice-btn" id="voiceBtn" onclick="toggleVoiceRecording()">
+          <button class="voice-btn" id="voiceBtn" onclick="toggleVoiceInput()" title="음성으로 입력">
             <svg id="micIcon" fill="none" stroke="currentColor" viewBox="0 0 24 24" width="20" height="20">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/>
-            </svg>
-            <svg id="stopIcon" fill="none" stroke="currentColor" viewBox="0 0 24 24" width="20" height="20" style="display:none">
-              <rect x="6" y="6" width="12" height="12" rx="2" fill="currentColor"/>
             </svg>
           </button>
           <input type="text" class="chat-input" id="chatInput" placeholder="메시지를 입력하세요..." onkeypress="handleKeyPress(event)">
@@ -803,14 +750,6 @@
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
             </svg>
           </button>
-        </div>
-        <div class="voice-recording-panel" id="voicePanel" style="display:none">
-          <div class="recording-indicator">
-            <span class="recording-dot">●</span>
-            <span class="recording-text">녹음 중...</span>
-            <span class="recording-time" id="recordingTime">0:00</span>
-          </div>
-          <button class="voice-cancel-btn" onclick="cancelRecording()">취소</button>
         </div>
       </div>
     </div>
@@ -1013,23 +952,22 @@
       messagesContainer.innerHTML = '';
       messages.forEach(msg => {
         const messageDiv = document.createElement('div');
-        messageDiv.className = `message ${msg.role}`;
-        if (msg.role === 'assistant') {
-          messageDiv.innerHTML = marked.parse(msg.content);
-          
-          const speakBtn = document.createElement('button');
-          speakBtn.className = 'message-speak-btn';
-          speakBtn.innerHTML = '🔊';
-          speakBtn.title = '클릭하여 읽기';
-          speakBtn.onclick = () => {
-            const plainText = msg.content.replace(/<[^>]*>/g, '').replace(/\n/g, ' ');
-            speakText(plainText);
-          };
-          messageDiv.appendChild(speakBtn);
+        messageDiv.className = `message ${msg.role === 'assistant' ? 'assistant' : msg.role}`;
+        const isBot = msg.role === 'assistant';
+        if (isBot) {
+          messageDiv.innerHTML = marked.parse(msg.content) + '<button class="message-speak-btn" title="클릭하여 읽기">🔊</button>';
         } else {
           messageDiv.textContent = msg.content;
         }
         messagesContainer.appendChild(messageDiv);
+        
+        if (isBot) {
+          const speakBtn = messageDiv.querySelector('.message-speak-btn');
+          speakBtn.onclick = () => {
+            const plainText = msg.content.replace(/<[^>]*>/g, '').replace(/\n/g, ' ');
+            speakText(plainText);
+          };
+        }
       });
       scrollToBottom();
     }
@@ -1097,22 +1035,21 @@
 
     function addMessage(text, sender) {
       const messageDiv = document.createElement('div');
-      messageDiv.className = `message ${sender}`;
+      messageDiv.className = `message ${sender === 'assistant' ? 'assistant' : sender}`;
       if (sender === 'assistant') {
-        messageDiv.innerHTML = marked.parse(text);
-        
-        const speakBtn = document.createElement('button');
-        speakBtn.className = 'message-speak-btn';
-        speakBtn.innerHTML = '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="16" height="16"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-2a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/></svg>';
-        speakBtn.onclick = () => {
-          const plainText = text.replace(/<[^>]*>/g, '').replace(/\n/g, ' ');
-          speakText(plainText);
-        };
-        messageDiv.appendChild(speakBtn);
+        messageDiv.innerHTML = marked.parse(text) + '<button class="message-speak-btn" title="클릭하여 읽기">🔊</button>';
       } else {
         messageDiv.textContent = text;
       }
       messagesContainer.appendChild(messageDiv);
+      
+      if (sender === 'assistant') {
+        const speakBtn = messageDiv.querySelector('.message-speak-btn');
+        speakBtn.onclick = () => {
+          const plainText = text.replace(/<[^>]*>/g, '').replace(/\n/g, ' ');
+          speakText(plainText);
+        };
+      }
       scrollToBottom();
 
       if (currentRoomId) {
@@ -1212,42 +1149,36 @@
     let speakLang = 'ko-KR';
 
     function toggleLang() {
-      if (speakLang === 'ko-KR') {
-        speakLang = 'en-US';
-        document.getElementById('langBtn').textContent = '🇺🇸';
-      } else {
-        speakLang = 'ko-KR';
-        document.getElementById('langBtn').textContent = '🇰🇷';
-      }
+      alert('현재 한국어 음성으로 설정되어 있습니다. 다른 언어로 변경하려면 말씀해 주세요!');
     }
 
-    function speakText(text) {
-      if ('speechSynthesis' in window) {
-        window.speechSynthesis.cancel();
-        
-        const utterance = new SpeechSynthesisUtterance(text);
-        
-        const voices = window.speechSynthesis.getVoices();
-        
-        if (speakLang === 'ko-KR') {
-          const koreanVoice = voices.find(v => v.lang.includes('ko') || v.lang.includes('KO'));
-          if (koreanVoice) {
-            utterance.voice = koreanVoice;
-            utterance.lang = koreanVoice.lang;
-          }
-        } else {
-          const englishVoice = voices.find(v => v.lang.includes('en') && v.lang.includes('US'));
-          if (englishVoice) {
-            utterance.voice = englishVoice;
-          }
-        }
-        
-        utterance.rate = 0.85;
-        utterance.pitch = 1;
-        utterance.volume = 1;
-        
-        window.speechSynthesis.speak(utterance);
+function speakText(text) {
+      const room = chatRooms.find(r => r.id === currentRoomId);
+      const charType = room?.characterType || 'oppa';
+      
+      const plainText = text.replace(/<[^>]*>/g, '').trim();
+      if (!plainText) return;
+      
+      // Use browser TTS (works in all browsers)
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(plainText);
+      
+      const voices = window.speechSynthesis.getVoices();
+      const koreanVoice = voices.find(v => v.lang.startsWith('ko')) || voices.find(v => v.lang.includes('ko'));
+      
+      if (koreanVoice) {
+        utterance.voice = koreanVoice;
+        utterance.lang = koreanVoice.lang;
+      } else {
+        utterance.lang = 'ko-KR';
       }
+      
+      // Pitch: higher for female character, lower for male
+      utterance.pitch = charType === 'unnie' ? 1.2 : 0.75;
+      utterance.rate = charType === 'unnie' ? 0.9 : 1.0;
+      utterance.volume = 1;
+      
+      window.speechSynthesis.speak(utterance);
     }
 
     function toggleSpeak() {
@@ -1269,115 +1200,58 @@
       document.getElementById('speakBtn').classList.remove('speaking');
     }
 
-    let mediaRecorder = null;
-    let audioChunks = [];
-    let isRecording = false;
-    let recordingStartTime = 0;
+    let recognition = null;
+    let isListening = false;
 
-    async function toggleVoiceRecording() {
-      if (!isRecording) {
-        startRecording();
-      } else {
-        stopRecording();
+    function toggleVoiceInput() {
+      if (!isListening) {
+        startVoiceInput();
       }
     }
 
-    async function startRecording() {
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        
-        mediaRecorder = new MediaRecorder(stream);
-        audioChunks = [];
-        
-        mediaRecorder.ondataavailable = (event) => {
-          audioChunks.push(event.data);
-        };
-        
-        mediaRecorder.onstop = () => {
-          const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
-          const audioUrl = URL.createObjectURL(audioBlob);
-          
-          const audioElement = document.createElement('audio');
-          audioElement.src = audioUrl;
-          audioElement.controls = true;
-          
-          const messageDiv = document.createElement('div');
-          messageDiv.className = 'voice-message';
-          messageDiv.appendChild(audioElement);
-          messagesContainer.appendChild(messageDiv);
-          
-          const audioMsg = {
-            role: 'user',
-            type: 'voice',
-            content: audioUrl,
-            blob: audioBlob
-          };
-          
-          if (currentRoomId) {
-            const room = chatRooms.find(r => r.id === currentRoomId);
-            if (room) {
-              room.messages.push(audioMsg);
-              saveChatRooms();
-              renderChatRoomList();
-            }
-          }
-          
-          scrollToBottom();
-          
-          stream.getTracks().forEach(track => track.stop());
-          
-          simulateTyping();
-        };
-        
-        mediaRecorder.start();
-        isRecording = true;
-        recordingStartTime = Date.now();
-        
+    function startVoiceInput() {
+      if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+        alert('음성 인식이 지원되지 않는 브라우저입니다. Chrome을 사용해 주세요.');
+        return;
+      }
+
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      recognition = new SpeechRecognition();
+      recognition.lang = 'ko-KR';
+      recognition.continuous = false;
+      recognition.interimResults = true;
+
+      recognition.onstart = () => {
+        isListening = true;
         document.getElementById('voiceBtn').classList.add('recording');
-        document.getElementById('micIcon').style.display = 'none';
-        document.getElementById('stopIcon').style.display = 'block';
-        document.getElementById('voicePanel').style.display = 'flex';
-        
-        updateRecordingTime();
-        
-      } catch (error) {
-        alert('마이크 접근 권한이 필요합니다!');
-        console.error('Microphone error:', error);
-      }
-    }
+        chatInput.placeholder = '말하는 중...';
+      };
 
-    function stopRecording() {
-      if (mediaRecorder && isRecording) {
-        mediaRecorder.stop();
-        isRecording = false;
-        
+      recognition.onresult = (event) => {
+        const transcript = Array.from(event.results)
+          .map(result => result[0].transcript)
+          .join('');
+        chatInput.value = transcript;
+      };
+
+      recognition.onerror = (event) => {
+        console.error('음성 인식 오류:', event.error);
+        isListening = false;
         document.getElementById('voiceBtn').classList.remove('recording');
-        document.getElementById('micIcon').style.display = 'block';
-        document.getElementById('stopIcon').style.display = 'none';
-        document.getElementById('voicePanel').style.display = 'none';
-      }
-    }
+        chatInput.placeholder = '메시지를 입력하세요...';
+      };
 
-    function cancelRecording() {
-      if (mediaRecorder && isRecording) {
-        mediaRecorder.stop();
-        isRecording = false;
-        
+      recognition.onend = () => {
+        isListening = false;
         document.getElementById('voiceBtn').classList.remove('recording');
-        document.getElementById('micIcon').style.display = 'block';
-        document.getElementById('stopIcon').style.display = 'none';
-        document.getElementById('voicePanel').style.display = 'none';
-      }
-    }
+        chatInput.placeholder = '메시지를 입력하세요...';
+        
+        if (chatInput.value.trim()) {
+          sendMessage();
+        }
+      };
 
-    function updateRecordingTime() {
-      if (isRecording) {
-        const elapsed = Math.floor((Date.now() - recordingStartTime) / 1000);
-        const minutes = Math.floor(elapsed / 60);
-        const seconds = elapsed % 60;
-        document.getElementById('recordingTime').textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
-        setTimeout(updateRecordingTime, 1000);
-      }
+      recognition.start();
     }
 
     init();
