@@ -1,1 +1,3 @@
-# Yammi19.github.io
+[Korean Website](ko/)
+
+[Video Quiz](video-quiz.html)
