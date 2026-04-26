@@ -243,7 +243,8 @@
       <div class="quiz-section">
         <h2>📝 問題</h2>
         <div id="quizContainer"></div>
-        <button class="submit-btn" onclick="checkAllAnswers()">Submit 提交</button>
+        <button class="submit-btn" id="submitBtn" onclick="checkAllAnswers()">Submit 提交</button>
+        <button class="submit-btn" id="retryBtn" onclick="resetQuiz()" style="display:none; background: linear-gradient(135deg, #6b7280, #4b5563);">Try Again 再試一次</button>
         <div class="result-box" id="resultBox"></div>
       </div>
     </div>
@@ -291,6 +292,8 @@
     function checkAllAnswers() {
       let score = 0;
       const resultBox = document.getElementById('resultBox');
+      const submitBtn = document.getElementById('submitBtn');
+      const retryBtn = document.getElementById('retryBtn');
       
       quizzes.forEach((quiz, index) => {
         const options = document.querySelectorAll('.quiz-item')[index].querySelectorAll('.quiz-option');
@@ -315,6 +318,25 @@
       } else {
         resultBox.classList.add('fail');
       }
+
+      submitBtn.style.display = 'none';
+      retryBtn.style.display = 'inline-block';
+    }
+
+    function resetQuiz() {
+      selectedAnswers = {};
+      const resultBox = document.getElementById('resultBox');
+      const submitBtn = document.getElementById('submitBtn');
+      const retryBtn = document.getElementById('retryBtn');
+
+      resultBox.className = 'result-box';
+      resultBox.textContent = '';
+      submitBtn.style.display = 'inline-block';
+      retryBtn.style.display = 'none';
+
+      document.querySelectorAll('.quiz-option').forEach(opt => {
+        opt.classList.remove('selected', 'correct', 'wrong');
+      });
     }
 
     initQuiz();
