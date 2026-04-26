@@ -243,38 +243,7 @@
       font-size: 0.8rem;
     }
 
-    .speak-btn {
-      margin-left: auto;
-      background: rgba(255,255,255,0.2);
-      border: none;
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      color: white;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.2s;
-    }
-
-    .speak-btn:hover {
-      background: rgba(255,255,255,0.3);
-    }
-
-    .speak-btn.speaking {
-      background: rgba(255,255,255,0.4);
-      animation: pulse 1s infinite;
-    }
-
-    .speak-btn.stopping {
-      background: #ef4444;
-    }
-
-    .lang-toggle-btn {
-      margin-left: auto;
-      background: rgba(255,255,255,0.2);
-      border: none;
+    .message-speak-btn {
       width: 32px;
       height: 32px;
       border-radius: 50%;
@@ -284,10 +253,6 @@
       align-items: center;
       justify-content: center;
       transition: all 0.2s;
-    }
-
-    .lang-toggle-btn:hover {
-      background: rgba(255,255,255,0.3);
     }
 
     @keyframes pulse {
@@ -736,12 +701,6 @@
             <div class="chatbot-title" id="currentName">오빠</div>
             <div class="chatbot-status">온라인</div>
           </div>
-          <button class="lang-toggle-btn" id="langBtn" onclick="toggleLang()" title="언어 변경">🇰🇷</button>
-          <button class="speak-btn" id="speakBtn" onclick="toggleSpeaking()" title="음성 읽기">
-            <svg id="speakIcon" fill="none" stroke="currentColor" viewBox="0 0 24 24" width="18" height="18">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>
-            </svg>
-          </button>
         </div>
         
         <div class="chat-messages" id="messages"></div>
@@ -749,11 +708,7 @@
         <div class="quick-replies" id="quickReplies"></div>
 
         <div class="chat-input-area">
-          <button class="voice-btn" id="voiceBtn" onclick="toggleVoiceInput()" title="음성으로 입력">
-            <svg id="micIcon" fill="none" stroke="currentColor" viewBox="0 0 24 24" width="20" height="20">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/>
-            </svg>
-          </button>
+          <button class="voice-btn" id="voiceBtn" onclick="toggleVoiceInput()" title="음성으로 입력">🎤</button>
           <input type="text" class="chat-input" id="chatInput" placeholder="메시지를 입력하세요..." onkeypress="handleKeyPress(event)">
           <button class="send-btn" onclick="sendMessage()">
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -965,21 +920,11 @@
         messageDiv.className = `message ${msg.role === 'assistant' ? 'assistant' : msg.role}`;
         const isBot = msg.role === 'assistant';
         if (isBot) {
-          messageDiv.innerHTML = marked.parse(msg.content) + '<button class="message-speak-btn" title="클릭하여 읽기">🔊</button>';
+          messageDiv.innerHTML = marked.parse(msg.content) + '<button class="message-speak-btn" title="클릭하여 읽기" onclick="toggleMessageSpeech(this)">🔊</button>';
         } else {
           messageDiv.textContent = msg.content;
         }
         messagesContainer.appendChild(messageDiv);
-        
-        if (isBot) {
-          const speakBtn = messageDiv.querySelector('.message-speak-btn');
-          speakBtn.onclick = () => {
-            let plainText = msg.content.replace(/<[^>]*>/g, '').replace(/\n/g, ' ');
-            plainText = plainText.replace(/[*#\-_]{3,}/g, ' ').replace(/\s+/g, ' ').trim();
-            plainText = plainText.replace(/[\u{1F300}-\u{1F9FF}]|[\u{1F600}-\u{1F64F}]|[\u{1F680}-\u{1F6FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]/gu, '').replace(/\s+/g, ' ').trim();
-            speakText(plainText);
-          };
-        }
       });
       scrollToBottom();
     }
@@ -1049,21 +994,11 @@
       const messageDiv = document.createElement('div');
       messageDiv.className = `message ${sender === 'assistant' ? 'assistant' : sender}`;
       if (sender === 'assistant') {
-        messageDiv.innerHTML = marked.parse(text) + '<button class="message-speak-btn" title="클릭하여 읽기">🔊</button>';
+        messageDiv.innerHTML = marked.parse(text) + '<button class="message-speak-btn" title="클릭하여 읽기" onclick="toggleMessageSpeech(this)">🔊</button>';
       } else {
         messageDiv.textContent = text;
       }
       messagesContainer.appendChild(messageDiv);
-      
-      if (sender === 'assistant') {
-        const speakBtn = messageDiv.querySelector('.message-speak-btn');
-        speakBtn.onclick = () => {
-          let plainText = text.replace(/<[^>]*>/g, '').replace(/\n/g, ' ');
-          plainText = plainText.replace(/[*#\-_]{3,}/g, ' ').replace(/\s+/g, ' ').trim();
-          plainText = plainText.replace(/[\u{1F300}-\u{1F9FF}]|[\u{1F600}-\u{1F64F}]|[\u{1F680}-\u{1F6FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]/gu, '').replace(/\s+/g, ' ').trim();
-          speakText(plainText);
-        };
-      }
       scrollToBottom();
 
       if (currentRoomId) {
@@ -1158,13 +1093,6 @@
       messagesContainer.scrollTop = messagesContainer.scrollHeight;
     }
 
-    function toggleLang() {
-      alert('현재 한국어 음성으로 설정되어 있습니다. 다른 언어로 변경하려면 말씀해 주세요!');
-    }
-
-    let isSpeaking = false;
-    let currentUtterance = null;
-
     function speakText(text) {
       const room = chatRooms.find(r => r.id === currentRoomId);
       const charType = room?.characterType || 'oppa';
@@ -1195,50 +1123,64 @@
       window.speechSynthesis.speak(utterance);
     }
 
-    function toggleSpeaking() {
-      const btn = document.getElementById('speakBtn');
-      const icon = document.getElementById('speakIcon');
-      
-      if (isSpeaking) {
-        stopSpeaking();
-        btn.classList.remove('speaking', 'stopping');
-        icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>';
+    function toggleMessageSpeech(btn) {
+      if (btn.classList.contains('speaking')) {
+        if ('speechSynthesis' in window) {
+          window.speechSynthesis.cancel();
+        }
+        btn.classList.remove('speaking');
+        btn.textContent = '🔊';
       } else {
-        const room = chatRooms.find(r => r.id === currentRoomId);
-        if (!room || room.messages.length === 0) return;
+        const messageDiv = btn.closest('.message');
+        const text = messageDiv ? messageDiv.innerText : '';
+        if (!text) return;
         
-        const lastBotMessage = [...room.messages].reverse().find(m => m.role === 'assistant');
-        if (!lastBotMessage) return;
+        let plainText = text.replace(/[\u{1F300}-\u{1F9FF}]|[\u{1F600}-\u{1F64F}]|[\u{1F680}-\u{1F6FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]/gu, '').replace(/\s+/g, ' ').trim();
+        if (!plainText) return;
         
         btn.classList.add('speaking');
-        icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 10a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z"/>';
+        btn.textContent = '⏹';
         
-        const plainText = lastBotMessage.content.replace(/<[^>]*>/g, '').replace(/\n/g, ' ').replace(/[*#\-_]{3,}/g, ' ').replace(/\s+/g, ' ').replace(/[\u{1F300}-\u{1F9FF}]|[\u{1F600}-\u{1F64F}]|[\u{1F680}-\u{1F6FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]/gu, '').replace(/\s+/g, ' ').trim();
-        speakText(plainText);
-        isSpeaking = true;
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(plainText);
         
-        currentUtterance.onend = () => {
-          isSpeaking = false;
+        const voices = window.speechSynthesis.getVoices();
+        const koreanVoice = voices.find(v => v.lang.startsWith('ko')) || voices.find(v => v.lang.includes('ko'));
+        
+        if (koreanVoice) {
+          utterance.voice = koreanVoice;
+          utterance.lang = koreanVoice.lang;
+        } else {
+          utterance.lang = 'ko-KR';
+        }
+        
+        utterance.pitch = 1;
+        utterance.rate = 1;
+        
+        window.speechSynthesis.speak(utterance);
+        
+        utterance.onend = () => {
           btn.classList.remove('speaking');
-          icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>';
+          btn.textContent = '🔊';
         };
       }
     }
 
-    function stopSpeaking() {
-      if ('speechSynthesis' in window) {
-        window.speechSynthesis.cancel();
+    function toggleVoiceInput() {
+      const btn = document.getElementById('voiceBtn');
+      
+      if (isListening) {
+        if (recognition) {
+          recognition.stop();
+        }
+        isListening = false;
+        btn.classList.remove('recording');
+        btn.textContent = '🎤';
+        chatInput.placeholder = '메시지를 입력하세요...';
+      } else {
+        startVoiceInput();
       }
-      isSpeaking = false;
-      const btn = document.getElementById('speakBtn');
-      const icon = document.getElementById('speakIcon');
-      if (btn) btn.classList.remove('speaking');
-      if (icon) icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>';
-      currentUtterance = null;
     }
-
-    let recognition = null;
-    let isListening = false;
 
     function startVoiceInput() {
       if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
@@ -1255,6 +1197,7 @@
       recognition.onstart = () => {
         isListening = true;
         document.getElementById('voiceBtn').classList.add('recording');
+        document.getElementById('voiceBtn').textContent = '⏹';
         chatInput.placeholder = '말하는 중...';
       };
 
@@ -1268,13 +1211,17 @@
       recognition.onerror = (event) => {
         console.error('음성 인식 오류:', event.error);
         isListening = false;
-        document.getElementById('voiceBtn').classList.remove('recording');
+        const btn = document.getElementById('voiceBtn');
+        btn.classList.remove('recording');
+        btn.textContent = '🎤';
         chatInput.placeholder = '메시지를 입력하세요...';
       };
 
       recognition.onend = () => {
         isListening = false;
-        document.getElementById('voiceBtn').classList.remove('recording');
+        const btn = document.getElementById('voiceBtn');
+        btn.classList.remove('recording');
+        btn.textContent = '🎤';
         chatInput.placeholder = '메시지를 입력하세요...';
         
         if (chatInput.value.trim()) {
