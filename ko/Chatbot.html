@@ -1166,17 +1166,22 @@
       }
     }
 
+    let isListening = false;
+    let recognition = null;
+
     function toggleVoiceInput() {
       const btn = document.getElementById('voiceBtn');
       
-      if (isListening) {
-        if (recognition) {
+      if (isListening && recognition) {
+        try {
           recognition.stop();
+        } catch(e) {
+          console.log('Recognition stop error:', e);
+          isListening = false;
+          btn.classList.remove('recording');
+          btn.textContent = '🎤';
+          chatInput.placeholder = '메시지를 입력하세요...';
         }
-        isListening = false;
-        btn.classList.remove('recording');
-        btn.textContent = '🎤';
-        chatInput.placeholder = '메시지를 입력하세요...';
       } else {
         startVoiceInput();
       }
