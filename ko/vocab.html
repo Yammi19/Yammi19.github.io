@@ -766,11 +766,11 @@
       <div class="progress-container">
         <div class="progress-stats">
           <div class="stat">
-            <span class="stat-number">248</span>
+            <span class="stat-number" id="vocabCount">248</span>
             個單字已掌握
           </div>
           <div class="stat">
-            <span class="stat-number">17</span>
+            <span class="stat-number" id="streakDays">17</span>
             天連續學習
           </div>
         </div>
@@ -1116,6 +1116,19 @@ const flashcardData = [
       if (e.key === 'ArrowRight') nextCard();
       if (e.key === ' ' || e.key === 'Enter') flipCard();
     });
+
+    (function initProgress() {
+      const startDate = new Date('2025-01-01');
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const daysPassed = Math.floor((today - startDate) / (1000 * 60 * 60 * 24));
+      const baseVocab = 248;
+      const baseStreak = 17;
+      const vocabPerDay = 5;
+      const streakPerDay = 1;
+      document.getElementById('vocabCount').textContent = baseVocab + (daysPassed * vocabPerDay);
+      document.getElementById('streakDays').textContent = baseStreak + (daysPassed * streakPerDay);
+    })();
   </script>
 
 </body>
