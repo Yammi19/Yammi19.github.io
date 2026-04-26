@@ -225,6 +225,9 @@
       font-size: 1.8rem;
       margin-bottom: 20px;
       color: #4b2e5a;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
     }
     .quiz-timestamps {
       display: flex;
@@ -264,10 +267,11 @@
 
     .score-display {
       background: rgba(192, 132, 252, 0.2);
-      padding: 10px 24px;
-      border-radius: 30px;
+      padding: 6px 16px;
+      border-radius: 20px;
       font-weight: 600;
       color: #c084fc;
+      font-size: 0.9rem;
     }
 
     .results-modal {
@@ -374,7 +378,6 @@
         <a href="stats.html">Statistics</a>
         <a href="Contact.html">Contact</a>
       </div>
-      <div class="score-display">得分: <span id="score">0</span> / <span id="total">4</span></div>
     </div>
   </nav>
 
@@ -392,7 +395,7 @@
       </div>
 
       <div class="video-wrapper">
-        <iframe id="videoFrame" src="https://www.youtube.com/embed/NK48KwLQL74?enablejsapi=1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        <iframe id="videoFrame" src="https://www.youtube.com/embed/RvRqnWvn5pQ?enablejsapi=1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
         
         <div class="quiz-overlay" id="quizOverlay">
           <div class="quiz-popup">
@@ -405,7 +408,7 @@
       </div>
 
       <div class="quiz-info">
-        <h2>📝 問答時間表</h2>
+        <h2>📝 問答時間表 <div class="score-display">得分: <span id="score">0</span> / <span id="total">4</span></div></h2>
         <div class="quiz-timestamps" id="quizTimestamps"></div>
       </div>
     </div>
@@ -423,10 +426,10 @@
   <script src="https://www.youtube.com/iframe_api"></script>
   <script>
     const quizzes = [
-      { timestamp: 15, question: "「아버지오셨어요」意思係？", options: ["爸爸你走啦", "爸爸你返咗嚟", "爸爸食咗未", "爸爸你去邊"], correct: 1 },
-      { timestamp: 30, question: "「실례합니다」意思係？", options: ["多謝晒", "請借過/打攪哂", "對唔住", "再見"], correct: 1 },
-      { timestamp: 45, question: "「잘먹겠습니다」通常幾時講？", options: ["食完之後", "食之前", "同朋友打招呼", "同屋企人道別"], correct: 1 },
-      { timestamp: 60, question: "「밥먹자」意思係？", options: ["你食咗未", "一齊食飯啦", "煮飯啦", "肚餓呀"], correct: 1 }
+      { timestamp: 15, question: "「뭐야?」意思係？", options: ["幾時？", "咩嚟？", "點解？", "邊個？"], correct: 1 },
+      { timestamp: 30, question: "「괜찮아」意思係？", options: ["多謝", "唔該", "OK呀/冇事", "對唔住"], correct: 2 },
+      { timestamp: 45, question: "「배고파」意思係？", options: ["你好嘢", "我肚餓", "你好嗎", "多謝"], correct: 1 },
+      { timestamp: 60, question: "「파이팅」通常幾時用？", options: ["食嘢前", "加油/努力嗰時", "離開嗰時", "食完之後"], correct: 1 }
     ];
 
     let player;
