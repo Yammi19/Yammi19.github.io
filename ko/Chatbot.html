@@ -267,6 +267,10 @@
       animation: pulse 1s infinite;
     }
 
+    .speak-btn.stopping {
+      background: #ef4444;
+    }
+
     .lang-toggle-btn {
       margin-left: auto;
       background: rgba(255,255,255,0.2);
@@ -733,6 +737,11 @@
             <div class="chatbot-status">온라인</div>
           </div>
           <button class="lang-toggle-btn" id="langBtn" onclick="toggleLang()" title="언어 변경">🇰🇷</button>
+          <button class="speak-btn" id="speakBtn" onclick="toggleSpeaking()" title="음성 읽기">
+            <svg id="speakIcon" fill="none" stroke="currentColor" viewBox="0 0 24 24" width="18" height="18">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>
+            </svg>
+          </button>
         </div>
         
         <div class="chat-messages" id="messages"></div>
@@ -965,7 +974,9 @@
         if (isBot) {
           const speakBtn = messageDiv.querySelector('.message-speak-btn');
           speakBtn.onclick = () => {
-            const plainText = msg.content.replace(/<[^>]*>/g, '').replace(/\n/g, ' ');
+            let plainText = msg.content.replace(/<[^>]*>/g, '').replace(/\n/g, ' ');
+            plainText = plainText.replace(/[*#\-_]{3,}/g, ' ').replace(/\s+/g, ' ').trim();
+            plainText = plainText.replace(/[\u{1F300}-\u{1F9FF}]|[\u{1F600}-\u{1F64F}]|[\u{1F680}-\u{1F6FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]/gu, '').replace(/\s+/g, ' ').trim();
             speakText(plainText);
           };
         }
@@ -1047,7 +1058,9 @@
       if (sender === 'assistant') {
         const speakBtn = messageDiv.querySelector('.message-speak-btn');
         speakBtn.onclick = () => {
-          const plainText = text.replace(/<[^>]*>/g, '').replace(/\n/g, ' ');
+          let plainText = text.replace(/<[^>]*>/g, '').replace(/\n/g, ' ');
+          plainText = plainText.replace(/[*#\-_]{3,}/g, ' ').replace(/\s+/g, ' ').trim();
+          plainText = plainText.replace(/[\u{1F300}-\u{1F9FF}]|[\u{1F600}-\u{1F64F}]|[\u{1F680}-\u{1F6FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]/gu, '').replace(/\s+/g, ' ').trim();
           speakText(plainText);
         };
       }
@@ -1145,22 +1158,22 @@
       messagesContainer.scrollTop = messagesContainer.scrollHeight;
     }
 
-    let isSpeaking = false;
-    let autoSpeak = false;
-    let speakLang = 'ko-KR';
-
     function toggleLang() {
       alert('현재 한국어 음성으로 설정되어 있습니다. 다른 언어로 변경하려면 말씀해 주세요!');
     }
 
-function speakText(text) {
+    let isSpeaking = false;
+    let currentUtterance = null;
+
+    function speakText(text) {
       const room = chatRooms.find(r => r.id === currentRoomId);
       const charType = room?.characterType || 'oppa';
       
-      const plainText = text.replace(/<[^>]*>/g, '').trim();
+      let plainText = text.replace(/<[^>]*>/g, '').trim();
+      plainText = plainText.replace(/[*#\-_]{3,}/g, ' ').replace(/\s+/g, ' ').trim();
+      plainText = plainText.replace(/[\u{1F300}-\u{1F9FF}]|[\u{1F600}-\u{1F64F}]|[\u{1F680}-\u{1F6FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]/gu, '').replace(/\s+/g, ' ').trim();
       if (!plainText) return;
       
-      // Use browser TTS (works in all browsers)
       window.speechSynthesis.cancel();
       const utterance = new SpeechSynthesisUtterance(plainText);
       
@@ -1174,22 +1187,41 @@ function speakText(text) {
         utterance.lang = 'ko-KR';
       }
       
-      // Pitch: higher for female character, lower for male
       utterance.pitch = charType === 'unnie' ? 1.2 : 0.75;
       utterance.rate = charType === 'unnie' ? 0.9 : 1.0;
       utterance.volume = 1;
       
+      currentUtterance = utterance;
       window.speechSynthesis.speak(utterance);
     }
 
-    function toggleSpeak() {
-      autoSpeak = !autoSpeak;
+    function toggleSpeaking() {
       const btn = document.getElementById('speakBtn');
-      if (autoSpeak) {
-        btn.classList.add('speaking');
-      } else {
+      const icon = document.getElementById('speakIcon');
+      
+      if (isSpeaking) {
         stopSpeaking();
-        btn.classList.remove('speaking');
+        btn.classList.remove('speaking', 'stopping');
+        icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>';
+      } else {
+        const room = chatRooms.find(r => r.id === currentRoomId);
+        if (!room || room.messages.length === 0) return;
+        
+        const lastBotMessage = [...room.messages].reverse().find(m => m.role === 'assistant');
+        if (!lastBotMessage) return;
+        
+        btn.classList.add('speaking');
+        icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 10a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z"/>';
+        
+        const plainText = lastBotMessage.content.replace(/<[^>]*>/g, '').replace(/\n/g, ' ').replace(/[*#\-_]{3,}/g, ' ').replace(/\s+/g, ' ').replace(/[\u{1F300}-\u{1F9FF}]|[\u{1F600}-\u{1F64F}]|[\u{1F680}-\u{1F6FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]/gu, '').replace(/\s+/g, ' ').trim();
+        speakText(plainText);
+        isSpeaking = true;
+        
+        currentUtterance.onend = () => {
+          isSpeaking = false;
+          btn.classList.remove('speaking');
+          icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>';
+        };
       }
     }
 
@@ -1198,17 +1230,15 @@ function speakText(text) {
         window.speechSynthesis.cancel();
       }
       isSpeaking = false;
-      document.getElementById('speakBtn').classList.remove('speaking');
+      const btn = document.getElementById('speakBtn');
+      const icon = document.getElementById('speakIcon');
+      if (btn) btn.classList.remove('speaking');
+      if (icon) icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>';
+      currentUtterance = null;
     }
 
     let recognition = null;
     let isListening = false;
-
-    function toggleVoiceInput() {
-      if (!isListening) {
-        startVoiceInput();
-      }
-    }
 
     function startVoiceInput() {
       if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
