@@ -79,7 +79,7 @@
     }
 
     .content {
-      max-width: 1000px;
+      max-width: 800px;
       margin: 0 auto;
       padding: 40px 30px;
     }
@@ -100,262 +100,108 @@
       border: none;
     }
 
-    .quiz-overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(26, 22, 37, 0.95);
-      display: none;
-      justify-content: center;
-      align-items: center;
-      z-index: 100;
-    }
-    .quiz-overlay.active {
-      display: flex;
-    }
-
-    .quiz-popup {
-      background: linear-gradient(145deg, #2d1f4e, #3d2a5f);
-      border-radius: 24px;
-      padding: 40px 50px;
-      max-width: 500px;
-      width: 90%;
-      text-align: center;
-      box-shadow: 0 25px 80px rgba(0, 0, 0, 0.5);
-      border: 1px solid rgba(192, 132, 252, 0.3);
-      animation: popIn 0.3s ease;
-    }
-    @keyframes popIn {
-      from { transform: scale(0.8); opacity: 0; }
-      to { transform: scale(1); opacity: 1; }
-    }
-
-    .quiz-question {
-      font-size: 1.4rem;
-      margin-bottom: 30px;
-      line-height: 1.6;
-      color: #fff;
-    }
-    .quiz-options {
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-    }
-    .quiz-option {
-      background: rgba(255, 255, 255, 0.08);
-      border: 2px solid rgba(255, 255, 255, 0.15);
-      border-radius: 12px;
-      padding: 16px 24px;
-      font-size: 1.1rem;
-      color: #fff;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      text-align: left;
-    }
-    .quiz-option:hover {
-      background: rgba(192, 132, 252, 0.2);
-      border-color: #c084fc;
-    }
-    .quiz-option.correct {
-      background: #22c55e;
-      border-color: #22c55e;
-    }
-    .quiz-option.wrong {
-      background: #ef4444;
-      border-color: #ef4444;
-    }
-    .quiz-option.disabled {
-      pointer-events: none;
-      opacity: 0.6;
-    }
-
-    .feedback-msg {
-      margin-top: 20px;
-      font-size: 1.2rem;
-      font-weight: 600;
-      min-height: 35px;
-    }
-    .feedback-msg.correct {
-      color: #22c55e;
-    }
-    .feedback-msg.wrong {
-      color: #ef4444;
-    }
-
-    .continue-btn {
-      margin-top: 25px;
-      padding: 14px 40px;
-      font-size: 1.1rem;
-      font-weight: 600;
-      background: #c084fc;
-      color: white;
-      border: none;
-      border-radius: 30px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-    .continue-btn:hover {
-      background: #a855f7;
-      transform: translateY(-2px);
-    }
-
-    .progress-container {
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 10px;
-      height: 8px;
-      margin-bottom: 20px;
-      overflow: hidden;
-    }
-    .progress-bar {
-      background: linear-gradient(90deg, #c084fc, #a855f7);
-      height: 100%;
-      width: 0%;
-      transition: width 0.3s ease;
-    }
-
-    .quiz-info {
+    .quiz-section {
       background: white;
       border-radius: 16px;
       padding: 30px;
       box-shadow: 0 4px 20px rgba(0,0,0,0.08);
     }
-    .quiz-info h2 {
+    .quiz-section h2 {
       font-size: 1.8rem;
-      margin-bottom: 20px;
       color: #4b2e5a;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+      margin-bottom: 20px;
     }
-    .quiz-timestamps {
+
+    .quiz-item {
+      margin-bottom: 25px;
+      padding-bottom: 25px;
+      border-bottom: 1px solid #eee;
+    }
+    .quiz-item:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+    .quiz-question {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 15px;
+    }
+    .quiz-options {
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 10px;
     }
-    .timestamp-item {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-      padding: 15px 20px;
+    .quiz-option {
       background: #f9f9fc;
+      border: 2px solid #e0e0e0;
       border-radius: 10px;
+      padding: 12px 15px;
       font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: left;
     }
-    .timestamp-item.completed {
-      background: rgba(34, 197, 94, 0.15);
+    .quiz-option:hover {
+      border-color: #c084fc;
+      background: rgba(192, 132, 252, 0.1);
     }
-    .timestamp-item.completed::before {
-      content: "✓";
-      color: #22c55e;
-      font-weight: bold;
+    .quiz-option.selected {
+      border-color: #c084fc;
+      background: rgba(192, 132, 252, 0.2);
     }
-    .timestamp {
-      background: #c084fc;
+    .quiz-option.correct {
+      border-color: #22c55e;
+      background: rgba(34, 197, 94, 0.2);
+    }
+    .quiz-option.wrong {
+      border-color: #ef4444;
+      background: rgba(239, 68, 68, 0.2);
+    }
+
+    .submit-btn {
+      background: linear-gradient(135deg, #c084fc, #a855f7);
       color: white;
-      padding: 5px 12px;
-      border-radius: 20px;
+      border: none;
+      padding: 15px 40px;
+      font-size: 1.1rem;
       font-weight: 600;
-      font-size: 0.9rem;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-top: 20px;
     }
-    .status {
-      margin-left: auto;
-      font-size: 0.9rem;
-      opacity: 0.6;
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 20px rgba(192, 132, 252, 0.4);
     }
 
     .score-display {
       background: rgba(192, 132, 252, 0.2);
-      padding: 6px 16px;
-      border-radius: 20px;
-      font-weight: 600;
-      color: #c084fc;
-      font-size: 0.9rem;
-    }
-
-    .results-modal {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(26, 22, 37, 0.98);
-      display: none;
-      justify-content: center;
-      align-items: center;
-      z-index: 200;
-    }
-    .results-modal.active {
-      display: flex;
-    }
-    .results-content {
-      text-align: center;
-      max-width: 500px;
-      padding: 50px;
-    }
-    .results-content h2 {
-      font-size: 3rem;
-      margin-bottom: 20px;
-      color: #c084fc;
-    }
-    .final-score {
-      font-size: 5rem;
-      font-weight: 700;
-      margin: 30px 0;
-      background: linear-gradient(135deg, #c084fc, #a855f7);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-    .results-content p {
-      font-size: 1.3rem;
-      opacity: 0.8;
-      margin-bottom: 40px;
-      color: #fff;
-    }
-    .restart-btn {
-      padding: 16px 50px;
-      font-size: 1.2rem;
-      font-weight: 600;
-      background: #c084fc;
-      color: white;
-      border: none;
+      padding: 10px 24px;
       border-radius: 30px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-    .restart-btn:hover {
-      background: #a855f7;
-      transform: translateY(-2px);
+      font-weight: 600;
+      color: #c084fc;
     }
 
-    .video-controls {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
+    .result-box {
+      margin-top: 20px;
       padding: 20px;
-      background: linear-gradient(transparent, rgba(0,0,0,0.8));
-      display: flex;
-      gap: 15px;
-      align-items: center;
+      border-radius: 12px;
+      text-align: center;
+      display: none;
     }
-    .control-btn {
-      background: rgba(255, 255, 255, 0.2);
-      border: none;
-      color: white;
-      padding: 10px 20px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 1rem;
-      transition: background 0.2s;
+    .result-box.show {
+      display: block;
     }
-    .control-btn:hover {
-      background: rgba(255, 255, 255, 0.3);
+    .result-box.success {
+      background: rgba(34, 197, 94, 0.2);
+      color: #22c55e;
     }
-    .time-display {
-      margin-left: auto;
-      font-weight: 500;
+    .result-box.fail {
+      background: rgba(239, 68, 68, 0.2);
+      color: #ef4444;
     }
 
     @media (max-width: 768px) {
@@ -390,189 +236,88 @@
     </div>
 
     <div class="content">
-      <div class="progress-container">
-        <div class="progress-bar" id="progressBar"></div>
-      </div>
-
       <div class="video-wrapper">
-        <iframe id="videoFrame" src="https://www.youtube.com/embed/iIPPvej7jLA?enablejsapi=1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-        
-        <div class="quiz-overlay" id="quizOverlay">
-          <div class="quiz-popup">
-            <div class="quiz-question" id="quizQuestion"></div>
-            <div class="quiz-options" id="quizOptions"></div>
-            <div class="feedback-msg" id="feedbackMsg"></div>
-            <button class="continue-btn" id="continueBtn" style="display:none;" onclick="resumeVideo()">繼續 ▶</button>
-          </div>
-        </div>
+        <iframe id="videoFrame" src="https://www.youtube.com/embed/JLHTv-R3pEI?enablejsapi=1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
       </div>
 
-      <div class="quiz-info">
-        <h2>📝 問答時間表 <div class="score-display">得分: <span id="score">0</span> / <span id="total">4</span></div></h2>
-        <div class="quiz-timestamps" id="quizTimestamps"></div>
+      <div class="quiz-section">
+        <h2>📝 問題</h2>
+        <div id="quizContainer"></div>
+        <button class="submit-btn" onclick="checkAllAnswers()">Submit 提交</button>
+        <div class="result-box" id="resultBox"></div>
       </div>
     </div>
   </main>
 
-  <div class="results-modal" id="resultsModal">
-    <div class="results-content">
-      <h2>🎉 測驗完成！</h2>
-      <div class="final-score" id="finalScore">0/4</div>
-      <p id="resultMessage">表現不錯！繼續努力！</p>
-      <button class="restart-btn" onclick="restartQuiz()">重新開始</button>
-    </div>
-  </div>
-
   <script src="https://www.youtube.com/iframe_api"></script>
   <script>
-const quizzes = [
-      { timestamp: 15, question: "呢個人係邊個?", options: ["JEON SOMI", "BLACKPINK JISOO", "TWICE NAYEON", "AESPA KARINA"], correct: 0 },
-      { timestamp: 30, question: "佢既dream job係咩?", options: ["演員", "YouTuber", "設計師", "廚師"], correct: 1 },
-      { timestamp: 45, question: "佢最鍾意既零食?", options: ["朱古力", "薯片", "糖", "餅乾"], correct: 0 },
-      { timestamp: 60, question: "呢個訪問出自邊到?", options: ["BuzzFeed", "Vox", "CNN", "BBC"], correct: 0 }
+    const quizzes = [
+      { question: "佢哋坐咗係邊?", options: ["밥테이블 (飯枱)", "소파 (梳化)", "침대 (床)", "의자 (椅子)"], correct: 0 },
+      { question: "女主角手上既嘢係咩?", options: ["젓가락 (筷子)", "숟가락 (羹)", "포크 (叉)", "나이프 (刀)"], correct: 0 },
+      { question: "男主角想要咩?", options: ["음식 (食物)", "물 (水)", "돈 (銀)", "휴대폰 (電話)"], correct: 0 },
+      { question: "呢個情況係咩場面?", options: ["식사 중 (食飯)", "운동 중 (運動)", "숙제 중 (做功課)", "게임 중 (打遊戲)"], correct: 0 }
     ];
 
-    let player;
-    let currentQuizIndex = 0;
-    let score = 0;
-    let answeredQuestions = new Set();
-    let videoPausedForQuiz = false;
+    let selectedAnswers = {};
 
-    function initQuizList() {
-      const container = document.getElementById('quizTimestamps');
+    function initQuiz() {
+      const container = document.getElementById('quizContainer');
       quizzes.forEach((quiz, index) => {
         const item = document.createElement('div');
-        item.className = 'timestamp-item';
-        item.id = `quiz-${index}`;
+        item.className = 'quiz-item';
         item.innerHTML = `
-          <span class="timestamp">${formatTime(quiz.timestamp)}</span>
-          <span class="status">尚未回答</span>
+          <div class="quiz-question">${index + 1}. ${quiz.question}</div>
+          <div class="quiz-options">
+            ${quiz.options.map((opt, optIndex) => `
+              <button class="quiz-option" onclick="selectAnswer(${index}, ${optIndex})">${opt}</button>
+            `).join('')}
+          </div>
         `;
         container.appendChild(item);
       });
     }
 
-    function formatTime(seconds) {
-      const mins = Math.floor(seconds / 60);
-      const secs = seconds % 60;
-      return `${mins}:${secs.toString().padStart(2, '0')}`;
+    function selectAnswer(quizIndex, optionIndex) {
+      selectedAnswers[quizIndex] = optionIndex;
+      const options = document.querySelectorAll('.quiz-item')[quizIndex].querySelectorAll('.quiz-option');
+      options.forEach((opt, i) => {
+        opt.classList.remove('selected');
+        if (i === optionIndex) {
+          opt.classList.add('selected');
+        }
+      });
     }
 
-    function onYouTubeIframeAPIReady() {
-      player = new YT.Player('videoFrame', {
-        events: {
-          'onReady': () => {
-            initQuizList();
+    function checkAllAnswers() {
+      let score = 0;
+      const resultBox = document.getElementById('resultBox');
+      
+      quizzes.forEach((quiz, index) => {
+        const options = document.querySelectorAll('.quiz-item')[index].querySelectorAll('.quiz-option');
+        options.forEach((opt, i) => {
+          opt.classList.remove('correct', 'wrong');
+          if (i === quiz.correct) {
+            opt.classList.add('correct');
+          } else if (selectedAnswers[index] === i && i !== quiz.correct) {
+            opt.classList.add('wrong');
           }
+        });
+        
+        if (selectedAnswers[index] === quiz.correct) {
+          score++;
         }
       });
-    }
 
-    setInterval(() => {
-      if (player && player.getPlayerState() === 1 && currentQuizIndex < quizzes.length) {
-        const t = player.getCurrentTime();
-        const q = quizzes[currentQuizIndex];
-        if (t >= q.timestamp && !answeredQuestions.has(currentQuizIndex)) {
-          showQuiz();
-        }
-      }
-    }, 500);
-
-    function showQuiz() {
-      if (currentQuizIndex >= quizzes.length) {
-        showResults();
-        return;
-      }
-
-      const quiz = quizzes[currentQuizIndex];
-      player.pauseVideo();
-      videoPausedForQuiz = true;
-
-      document.getElementById('quizQuestion').textContent = quiz.question;
-      document.getElementById('quizOptions').innerHTML = '';
-      document.getElementById('feedbackMsg').textContent = '';
-      document.getElementById('feedbackMsg').className = 'feedback-msg';
-      document.getElementById('continueBtn').style.display = 'none';
-
-      quiz.options.forEach((option, index) => {
-        const btn = document.createElement('button');
-        btn.className = 'quiz-option';
-        btn.textContent = option;
-        btn.onclick = () => checkAnswer(index);
-        document.getElementById('quizOptions').appendChild(btn);
-      });
-
-      document.getElementById('quizOverlay').classList.add('active');
-    }
-
-    function checkAnswer(selectedIndex) {
-      if (answeredQuestions.has(currentQuizIndex)) return;
-
-      const quiz = quizzes[currentQuizIndex];
-      const options = document.querySelectorAll('.quiz-option');
-      answeredQuestions.add(currentQuizIndex);
-
-      options.forEach(opt => opt.classList.add('disabled'));
-
-      if (selectedIndex === quiz.correct) {
-        options[selectedIndex].classList.add('correct');
-        document.getElementById('feedbackMsg').textContent = '✅ 正確！';
-        document.getElementById('feedbackMsg').className = 'feedback-msg correct';
-        score++;
-        document.getElementById('score').textContent = score;
-      } else {
-        options[selectedIndex].classList.add('wrong');
-        options[quiz.correct].classList.add('correct');
-        document.getElementById('feedbackMsg').textContent = '❌ 錯誤！正確答案是: ' + quiz.options[quiz.correct];
-        document.getElementById('feedbackMsg').className = 'feedback-msg wrong';
-      }
-
-      document.getElementById(`quiz-${currentQuizIndex}`).classList.add('completed');
-      document.getElementById(`quiz-${currentQuizIndex}`).querySelector('.status').textContent = '已完成';
-
-      document.getElementById('continueBtn').style.display = 'inline-block';
-      currentQuizIndex++;
-    }
-
-    function resumeVideo() {
-      document.getElementById('quizOverlay').classList.remove('active');
-      player.playVideo();
-      videoPausedForQuiz = false;
-    }
-
-    function showResults() {
-      document.getElementById('finalScore').textContent = `${score}/${quizzes.length}`;
-      
-      let message = '';
+      resultBox.textContent = `你既得分: ${score} / ${quizzes.length}`;
+      resultBox.className = 'result-box show';
       if (score === quizzes.length) {
-        message = '🎯 完美！全對！你是天才！';
-      } else if (score >= quizzes.length * 0.7) {
-        message = '🌟 做得很好！繼續保持！';
-      } else if (score >= quizzes.length * 0.4) {
-        message = '💪 不錯哦！再加油！';
+        resultBox.classList.add('success');
       } else {
-        message = '📚 再多看幾遍，你會做得更好！';
+        resultBox.classList.add('fail');
       }
-      document.getElementById('resultMessage').textContent = message;
-      
-      document.getElementById('resultsModal').classList.add('active');
     }
 
-    function restartQuiz() {
-      player.seekTo(0);
-      player.playVideo();
-      currentQuizIndex = 0;
-      score = 0;
-      answeredQuestions.clear();
-      document.getElementById('score').textContent = '0';
-      document.getElementById('resultsModal').classList.remove('active');
-      document.getElementById('quizOverlay').classList.remove('active');
-      
-      document.querySelectorAll('.timestamp-item').forEach(item => {
-        item.classList.remove('completed');
-        item.querySelector('.status').textContent = '尚未回答';
-      });
-    }
+    initQuiz();
   </script>
 </body>
 </html>
