@@ -982,7 +982,19 @@
       simulateTyping();
     }
 
-    function sanitizeInput(text) {
+    function sanitizeInput(text, preserveFormat) {
+      if (preserveFormat) {
+        const placeholder = '\u0000';
+        let result = text
+          .replace(/__/g, placeholder)
+          .replace(/\*\*/g, placeholder)
+          .replace(/&nbsp;/g, placeholder)
+          .replace(/~{1,2}/g, placeholder)
+          .replace(/[^A-Za-z0-9가-힣ㄱ-ㅎ\s~]/g, '')
+          .replace(new RegExp(placeholder, 'g'), '~')
+          .replace(/\s+/g, ' ').trim();
+        return result;
+      }
       return text.replace(/[^A-Za-z0-9가-힣ㄱ-ㅎ\s]/g, '').replace(/\s+/g, ' ').trim();
     }
 
@@ -990,13 +1002,13 @@
       const rawText = chatInput.value.trim();
       if (!rawText || !currentRoomId) return;
       
-      const text = sanitizeInput(rawText);
+      const text = rawText.replace(/[^A-Za-z0-9가-힣ㄱ-ㅎ\s]/g, '').replace(/\s+/g, ' ').trim();
       if (!text) {
-        alert('단어만 입력해 주세요! (특수문자, 이모지,記号는 사용 불가)');
+        alert('단어만 입력해 주세요! (특수문자, 이모지, 기호는 사용 불가)');
         return;
       }
       
-      addMessage(text, 'user');
+      addMessage(rawText, 'user');
       chatInput.value = '';
       simulateTyping();
     }
@@ -1109,7 +1121,7 @@
       const charType = room?.characterType || 'oppa';
       
       let plainText = text.replace(/<[^>]*>/g, '').trim();
-      plainText = sanitizeInput(plainText);
+      plainText = sanitizeInput(plainText, true);
       if (!plainText) return;
       
       window.speechSynthesis.cancel();
@@ -1145,7 +1157,7 @@
         const text = messageDiv ? messageDiv.innerText : '';
         if (!text) return;
         
-        let plainText = sanitizeInput(text);
+        let plainText = sanitizeInput(text, true);
         if (!plainText) return;
         
         btn.classList.add('speaking');
