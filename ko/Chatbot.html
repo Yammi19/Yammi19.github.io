@@ -983,7 +983,7 @@
     }
 
     function sanitizeInput(text) {
-      return text.replace(/[^\w\s\uAC00-\uD7AF\u3131-\u318E]/g, '').replace(/\s+/g, ' ').trim();
+      return text.replace(/[^A-Za-z0-9가-힣ㄱ-ㅎ\s]/g, '').replace(/\s+/g, ' ').trim();
     }
 
     function sendMessage() {
@@ -1109,8 +1109,7 @@
       const charType = room?.characterType || 'oppa';
       
       let plainText = text.replace(/<[^>]*>/g, '').trim();
-      plainText = plainText.replace(/[*#\-_]{3,}/g, ' ').replace(/\s+/g, ' ').trim();
-      plainText = plainText.replace(/[\u{1F300}-\u{1F9FF}]|[\u{1F600}-\u{1F64F}]|[\u{1F680}-\u{1F6FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]/gu, '').replace(/\s+/g, ' ').trim();
+      plainText = sanitizeInput(plainText);
       if (!plainText) return;
       
       window.speechSynthesis.cancel();
@@ -1146,7 +1145,7 @@
         const text = messageDiv ? messageDiv.innerText : '';
         if (!text) return;
         
-        let plainText = text.replace(/[\u{1F300}-\u{1F9FF}]|[\u{1F600}-\u{1F64F}]|[\u{1F680}-\u{1F6FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]/gu, '').replace(/\s+/g, ' ').trim();
+        let plainText = sanitizeInput(text);
         if (!plainText) return;
         
         btn.classList.add('speaking');
