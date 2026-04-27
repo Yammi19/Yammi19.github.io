@@ -1166,7 +1166,7 @@
       }
       
       utterance.pitch = charType === 'unnie' ? 1.2 : 0.75;
-      utterance.rate = charType === 'unnie' ? 0.9 : 1.0;
+      utterance.rate = charType === 'unnie' ? 0.8 : 0.85;
       utterance.volume = 1;
       
       currentUtterance = utterance;
@@ -1205,7 +1205,7 @@
         }
         
         utterance.pitch = 1;
-        utterance.rate = 1;
+        utterance.rate = 0.85;
         
         window.speechSynthesis.speak(utterance);
         
