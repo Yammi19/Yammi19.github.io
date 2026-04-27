@@ -976,14 +976,25 @@
     }
 
     function sendQuickReply(text) {
-      addMessage(text, 'user');
+      const sanitizedText = sanitizeInput(text);
+      addMessage(sanitizedText, 'user');
       chatInput.value = '';
       simulateTyping();
     }
 
+    function sanitizeInput(text) {
+      return text.replace(/[^\w\s\uAC00-\uD7AF\u3131-\u318E]/g, '').replace(/\s+/g, ' ').trim();
+    }
+
     function sendMessage() {
-      const text = chatInput.value.trim();
-      if (!text || !currentRoomId) return;
+      const rawText = chatInput.value.trim();
+      if (!rawText || !currentRoomId) return;
+      
+      const text = sanitizeInput(rawText);
+      if (!text) {
+        alert('단어만 입력해 주세요! (특수문자, 이모지,記号는 사용 불가)');
+        return;
+      }
       
       addMessage(text, 'user');
       chatInput.value = '';
@@ -1229,8 +1240,12 @@
         btn.textContent = '🎤';
         chatInput.placeholder = '메시지를 입력하세요...';
         
-        if (chatInput.value.trim()) {
+        const sanitized = sanitizeInput(chatInput.value.trim());
+        if (sanitized) {
+          chatInput.value = sanitized;
           sendMessage();
+        } else {
+          chatInput.value = '';
         }
       };
 
