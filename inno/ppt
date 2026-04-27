@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Korean Soulmate AI - Final Presentation</title>
+    <style>
+        :root {
+            --primary: #ff8fb1;
+            --primary-soft: #ffc2d1;
+            --accent: #b28dff;
+            --bg-light: #fff5f8;
+            --text-dark: #4a4a4a;
+            --white: #ffffff;
+            --shadow: 0 10px 30px rgba(255, 143, 177, 0.15);
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            overflow: hidden;
+        }
+
+        .slides {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        .slide {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 5% 10%;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            background: var(--bg-light);
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(255, 194, 209, 0.3) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(178, 141, 255, 0.2) 0%, transparent 25%);
+        }
+
+        .slide.active {
+            opacity: 1;
+            visibility: visible;
+            z-index: 10;
+        }
+
+        h1 { font-size: 3.5em; color: var(--primary); margin: 0.2em 0; font-weight: 800; line-height: 1.1; }
+        h2 { font-size: 2.2em; color: var(--accent); margin-bottom: 0.5em; font-weight: 700; }
+        h3 { font-size: 1.5em; color: var(--primary); margin-bottom: 0.3em; }
+
+        p, li { font-size: 1.15em; line-height: 1.5; max-width: 900px; margin: 0.4em auto; }
+
+        .highlight-box {
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            border-left: 8px solid var(--primary);
+            text-align: left;
+            margin: 1em 0;
+            width: 85%;
+        }
+
+        .team-grid { display: flex; justify-content: center; gap: 1.5rem; margin-top: 1.5rem; }
+        .member {
+            background: var(--white);
+            padding: 0.6rem 1.2rem;
+            border-radius: 50px;
+            box-shadow: var(--shadow);
+            font-weight: 600;
+            color: var(--primary);
+            border: 1px solid var(--primary-soft);
+            font-size: 0.9em;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            width: 100%;
+            max-width: 1100px;
+            margin-top: 15px;
+        }
+
+        .card {
+            background: var(--white);
+            padding: 1.2rem;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            border: 1px solid transparent;
+        }
+        .card:hover { border-color: var(--primary-soft); transform: translateY(-5px); }
+
+        .nav-hints {
+            position: absolute;
+            bottom: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            z-index: 100;
+        }
+
+        .nav-btn {
+            background: var(--white);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            box-shadow: var(--shadow);
+            color: var(--primary);
+            font-weight: bold;
+            transition: 0.3s;
+        }
+        .nav-btn:hover { background: var(--primary); color: white; }
+
+        .slide-number {
+            position: absolute;
+            bottom: 30px;
+            right: 40px;
+            font-weight: bold;
+            color: var(--primary-soft);
+        }
+
+        a { color: var(--accent); text-decoration: none; font-weight: bold; }
+        ul { text-align: left; display: inline-block; }
+    </style>
+</head>
+<body>
+
+<div class="slides">
+
+    <!-- PART 1: Opening -->
+    <div class="slide active">
+        <div style="font-size: 3rem;">🫰</div>
+        <h1>Korean Soulmate AI</h1>
+        <h2>Learn Korean Like Falling in Love</h2>
+        <p>Innovating language learning through emotional companionship and IoT</p>
+        <div class="team-grid">
+            <div class="member">Chan Yuen Yee</div>
+            <div class="member">Kwok Chin Chin</div>
+            <div class="member">Yeung Tsz Ying</div>
+        </div>
+    </div>
+
+    <!-- PART 1: The Innovation Idea -->
+    <div class="slide">
+        <h2>The Innovation Idea</h2>
+        <div class="highlight-box">
+            <ul>
+                <li><strong>The Problem:</strong> 70% of learners quit due to isolation and "output anxiety."</li>
+                <li><strong>The Innovation:</strong> A 24/7 AI "Soulmate" that doesn't just teach—it cares.</li>
+                <li><strong>The Goal:</strong> Transition from "Studying" to "Experiencing" Korean.</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- PART 2: App Overview -->
+    <div class="slide">
+        <h2>App Overview: Design & Features</h2>
+        <div class="grid">
+            <div class="card">
+                <h3>Target Users</h3>
+                <p>HK K-pop/K-drama fans (18-35) with fragmented time.</p>
+            </div>
+            <div class="card">
+                <h3>Visual Identity</h3>
+                <p>Soft, romantic, and modern aesthetic to reduce learning stress.</p>
+            </div>
+            <div class="card">
+                <h3>IoT Edge</h3>
+                <p>Connecting the digital soulmate to smart home devices.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- PART 3: Demo Highlights - AI Chat -->
+    <div class="slide">
+        <h2>Demo: Interactive AI Soulmate</h2>
+        <div style="margin: 15px 0; font-size: 1.2em;">
+            <p><a href="https://files.catbox.moe/rgkugm.png" target="_blank">🔗 View Oppa Chat Interface</a></p>
+            <p><a href="https://files.catbox.moe/rehjo9.png" target="_blank">🔗 View Boss/Unnie Interface</a></p>
+        </div>
+        <div class="highlight-box">
+            <p><strong>Real-time Emotional Chat:</strong> Practice speaking in a safe environment. The AI remembers your mood and corrected mistakes.</p>
+            <p style="text-align: center; margin-top: 10px;">
+                <a href="https://yammi19.github.io/ko/Chatbot.html" target="_blank">View Chatbot Demo →</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- PART 3: Demo Highlights - Immersion -->
+    <div class="slide">
+        <h2>Demo: Video Quiz & Immersion</h2>
+        <div class="highlight-box">
+            <p><strong>Dynamic Learning:</strong> Using actual K-pop and K-drama clips for listening tests. This keeps engagement high through pop-culture passion.</p>
+            <p style="text-align: center; margin-top: 10px;">
+                <a href="https://yammi19.github.io/ko/video-quiz.html" target="_blank">View Video Quiz Demo →</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- PART 3: Demo Highlights - Stats -->
+    <div class="slide">
+        <h2>Demo: Data & Statistics</h2>
+        <div class="highlight-box">
+            <p><strong>Data-Driven Mastery:</strong> Our stats page shows users exactly how their "Tutorial Effect" is improving over time, motivating them to stay consistent.</p>
+            <p style="text-align: center; margin-top: 10px;">
+                <a href="https://yammi19.github.io/ko/stats.html" target="_blank">View Statistics Page →</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- PART 4: Wrap-up -->
+    <div class="slide">
+        <h2>Wrap-up: Key Takeaways</h2>
+        <div class="highlight-box">
+            <ul>
+                <li><strong>Emotion Drives Results:</strong> Passion-led learning is the most effective.</li>
+                <li><strong>Integrated Tech:</strong> Web, AI, and IoT must work as a single ecosystem.</li>
+                <li><strong>User-Centric Design:</strong> Soft UI is vital for long-term emotional engagement.</li>
+            </ul>
+        </div>
+        <p><strong>Conclusion:</strong> We didn't just build a website; we built a bridge to Korean culture.</p>
+    </div>
+
+    <!-- Final Slide -->
+    <div class="slide">
+        <div style="font-size: 3rem;">✨</div>
+        <h1>감사합니다!</h1>
+        <h3>(Thank You!)</h3>
+        <p>Questions are welcome from the audience.</p>
+        <div class="team-grid">
+            <div class="member">Chan Yuen Yee</div>
+            <div class="member">Kwok Chin Chin</div>
+            <div class="member">Yeung Tsz Ying</div>
+        </div>
+        <p style="margin-top: 1rem;"><small>Visit Live: <a href="https://yammi19.github.io/ko/index.html" target="_blank">yammi19.github.io/ko</a></small></p>
+    </div>
+
+</div>
+
+<div class="nav-hints">
+    <button class="nav-btn" onclick="prevSlide()">← Previous</button>
+    <button class="nav-btn" onclick="nextSlide()">Next →</button>
+</div>
+
+<div class="slide-number" id="slideNum">1 / 8</div>
+
+<script>
+    let current = 0;
+    const slides = document.querySelectorAll('.slide');
+    const slideNum = document.getElementById('slideNum');
+
+    function updateSlide() {
+        slides.forEach((s, i) => s.classList.toggle('active', i === current));
+        slideNum.innerText = `${current + 1} / ${slides.length}`;
+    }
+
+    function nextSlide() { current = (current + 1) % slides.length; updateSlide(); }
+    function prevSlide() { current = (current - 1 + slides.length) % slides.length; updateSlide(); }
+
+    document.addEventListener('keydown', e => {
+        if (e.key === 'ArrowRight' || e.key === ' ') nextSlide();
+        if (e.key === 'ArrowLeft') prevSlide();
+    });
+</script>
+
+</body>
+</html>
