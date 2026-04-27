@@ -57,6 +57,33 @@
     .nav-links a:hover, .nav-links a.active {
       color: #c084fc;
     }
+    .menu-toggle {
+      display: none;
+      font-size: 1.8rem;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #4b2e5a;
+    }
+
+    @media (max-width: 768px) {
+      .menu-toggle { display: block; }
+      .nav-links {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: white;
+        flex-direction: column;
+        padding: 20px;
+        gap: 16px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      }
+      .nav-links.active {
+        display: flex;
+      }
+    }
 
     main {
       padding: 100px 0 80px;
@@ -230,6 +257,7 @@
   <nav>
     <div class="container nav-container">
       <a href="index.html" class="logo">공부하자 💕</a>
+      <button class="menu-toggle" onclick="document.querySelector('.nav-links').classList.toggle('active')">☰</button>
       <div class="nav-links">
         <a href="index.html">Home</a>
         <a href="vocab.html">Vocabulary</a>

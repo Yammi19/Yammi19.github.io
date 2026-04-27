@@ -15,7 +15,36 @@
     .nav-links { display: flex; gap: 40px; }
     .nav-links a { color: #4b2e5a; text-decoration: none; font-weight: 500; transition: color 0.3s; }
     .nav-links a:hover, .nav-links a.active { color: #c084fc; }
-    header { padding: 180px 0 100px; text-align: center; background: linear-gradient(to bottom, #fff5f0 0%, #ffffff 100%); }
+    .menu-toggle {
+      display: none;
+      font-size: 1.8rem;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #4b2e5a;
+    }
+
+    @media (max-width: 768px) {
+      .menu-toggle { display: block; }
+      .nav-links {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: white;
+        flex-direction: column;
+        padding: 20px;
+        gap: 16px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      }
+      .nav-links.active { display: flex; }
+      h1 { font-size: 3.5rem; }
+      .subtitle { font-size: 1.5rem; }
+      .card { padding: 32px; }
+    }
+    @media (max-width: 980px) { .grid { grid-template-columns: 1fr; } }
+    @media (max-width: 768px) { h1 { font-size: 3.5rem; } .subtitle { font-size: 1.5rem; } .card { padding: 32px; } }
     h1 { font-size: 4.2rem; font-weight: 700; color: #583475; margin-bottom: 20px; letter-spacing: -1px; }
     .subtitle { font-size: 1.9rem; color: #6b21a8; margin-bottom: 40px; max-width: 900px; margin-left: auto; margin-right: auto; }
     .content { padding: 80px 0 60px; }
@@ -36,8 +65,6 @@
     .cta-btn:hover { background: #a855f7; transform: translateY(-4px); box-shadow: 0 12px 35px rgba(168,85,247,0.35); }
     footer { padding: 80px 0 40px; text-align: center; color: #888; background: #f9f9fc; border-top: 1px solid #eee; }
     footer .accent { color: #c084fc; }
-    @media (max-width: 980px) { .grid { grid-template-columns: 1fr; } }
-    @media (max-width: 768px) { h1 { font-size: 3.5rem; } .subtitle { font-size: 1.5rem; } .nav-links { gap: 24px; font-size: 0.95rem; } .card { padding: 32px; } }
   .bgimg {
   background-image:linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)), /* 白色，50%透明度 */
     url("https://live.staticflickr.com/3385/3413407724_b65cc330a0_b.jpg");
@@ -50,6 +77,7 @@
   <nav>
     <div class="container nav-container">
       <a href="index.html" class="logo">공부하자 💕</a>
+      <button class="menu-toggle" onclick="document.querySelector('.nav-links').classList.toggle('active')">☰</button>
       <div class="nav-links">
         <a href="index.html">Home</a>
         <a href="vocab.html">Vocabulary</a>
